@@ -1,0 +1,55 @@
+{
+  "name": "@skarab42/tson",
+  "version": "0.1.0",
+  "description": "...",
+  "author": {
+    "name": "skarab42",
+    "email": "contact@skarab42.dev"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./build/esm/index.js",
+      "require": "./build/cjs/index.js",
+      "types": "./build/types/index.d.ts"
+    }
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "up-hooks": "npx simple-git-hooks",
+    "prepare": "pnpm up-hooks",
+    "build-esm": "tsc -p tsconfig-esm.json",
+    "build-cjs": "tsc -p tsconfig-cjs.json",
+    "build-types": "tsc -p tsconfig-types.json",
+    "write-esm-pkg": "echo {\"type\":\"module\"} > ./build/esm/package.json",
+    "write-cjs-pkg": "echo {\"type\":\"commonjs\"} > ./build/cjs/package.json",
+    "build": "pnpm build-esm && pnpm build-cjs && pnpm build-types && pnpm write-esm-pkg && pnpm write-cjs-pkg",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test-watch": "vitest watch",
+    "test-coverage": "vitest run --coverage",
+    "format": "prettier --write ./**/*{.js,.ts,.json,.md} --ignore-path .gitignore",
+    "lint": "eslint --ext \".js,.ts\" --max-warnings=0 --ignore-path .gitignore .",
+    "lint-fix": "pnpm lint --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "c8": "^7.11.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "lint-staged": "^12.3.4",
+    "prettier": "^2.5.1",
+    "simple-git-hooks": "^2.7.0",
+    "typescript": "^4.5.5",
+    "vitest": "^0.5.5"
+  }
+}

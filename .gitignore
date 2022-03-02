@@ -1,0 +1,9 @@
+node_modules
+coverage
+build
+
+*.log
+.DS_Store
+
+yarn.lock
+package-lock.json
