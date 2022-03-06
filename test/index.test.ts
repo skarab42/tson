@@ -17,6 +17,43 @@ test("number()", () => {
   );
 });
 
+test("bigint()", () => {
+  expect(t.bigint().check(42n)).toBe(42n);
+  expect(t.bigint().check(BigInt(42))).toBe(42n);
+  expect(t.bigint().check(BigInt(42))).toBe(BigInt(42));
+  expect(() => t.bigint().check("42")).toThrow(
+    "expected 'bigint' got 'string'",
+  );
+});
+
+test("symbol()", () => {
+  const sym = Symbol(42);
+  expect(t.symbol().check(sym)).toBe(sym);
+  expect(() => t.symbol().check(42)).toThrow("expected 'symbol' got 'number'");
+});
+
+test("func()", () => {
+  const f = (p: string) => p;
+  expect(t.func().check(f)).toBe(f);
+  expect(() => t.func().check(42)).toThrow("expected 'function' got 'number'");
+});
+
+test("nul()", () => {
+  expect(t.nul().check(null)).toBe(null);
+  expect(() => t.nul().check(0)).toThrow("expected 'null' got 'number'");
+  expect(() => t.nul().check(undefined)).toThrow(
+    "expected 'null' got 'undefined'",
+  );
+});
+
+test("undef()", () => {
+  expect(t.undef().check(undefined)).toBe(undefined);
+  expect(() => t.undef().check(null)).toThrow(
+    "expected 'undefined' got 'null'",
+  );
+  expect(() => t.undef().check(0)).toThrow("expected 'undefined' got 'number'");
+});
+
 test("boolean()", () => {
   expect(t.boolean().check(40 + 2 === 42)).toBe(true);
   expect(() => t.boolean().check(Symbol(42))).toThrow(
@@ -130,5 +167,17 @@ test("union(): with optional in object", () => {
   input = { name: "nyan", desc: Symbol(42) };
   expect(() => obj.check(input)).toThrow(
     "expected 'string|number|boolean' got 'symbol'",
+  );
+});
+
+test("union() as optional", () => {
+  const optional = t.union([t.string(), t.undef()]);
+  expect(optional.check("42")).toBe("42");
+  expect(optional.check(undefined)).toBe(undefined);
+  expect(() => optional.check(42)).toThrow(
+    "expected 'string|undefined' got 'number'",
+  );
+  expect(() => optional.check(null)).toThrow(
+    "expected 'string|undefined' got 'null'",
   );
 });
