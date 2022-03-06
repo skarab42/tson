@@ -19,6 +19,8 @@ export type InferSchema<TSchema extends Schema> = {
     : InferType<TSchema[Key]>;
 };
 
+export type InferTuple<TTypes extends unknown[]> = InferType<TTypes[number]>;
+
 export type ExtractType<TType, TUnion> = {
   [Key in keyof TType]-?: TUnion extends TType[Key] ? Key : never;
 }[keyof TType];

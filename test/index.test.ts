@@ -83,3 +83,52 @@ test("optional(string())", () => {
   expect(() => optional.check(42)).toThrow("expected 'string' got 'number'");
   expect(() => optional.check(null)).toThrow("expected 'string' got 'null'");
 });
+
+test("union()", () => {
+  const str = t.string();
+  const num = t.number();
+  const boo = t.boolean();
+  const uni = t.union([str, num, boo, str]);
+  expect(uni.check(42)).toBe(42);
+  expect(uni.check("42")).toBe("42");
+  expect(uni.check(40 + 2 === 42)).toBe(true);
+  expect(() => uni.check(undefined)).toThrow(
+    "expected 'string|number|boolean' got 'undefined'",
+  );
+  expect(() => uni.check(null)).toThrow(
+    "expected 'string|number|boolean' got 'null'",
+  );
+});
+
+test("union(): with optional", () => {
+  const str = t.string();
+  const num = t.number();
+  const boo = t.boolean();
+  const uni = t.optional(t.union([str, num, boo]));
+  expect(uni.check(undefined)).toBe(undefined);
+  expect(() => uni.check(null)).toThrow(
+    "expected 'string|number|boolean' got 'null'",
+  );
+});
+
+test("union(): with optional in object", () => {
+  const str = t.string();
+  const num = t.number();
+  const boo = t.boolean();
+  const obj = t.object({
+    name: t.string(),
+    desc: t.optional(t.union([str, num, boo])),
+  });
+  let input: object = { name: "nyan" };
+  expect(obj.check(input)).toBe(input);
+  input = { name: "nyan", desc: 42 };
+  expect(obj.check(input)).toBe(input);
+  input = { name: "nyan", desc: "42" };
+  expect(obj.check(input)).toBe(input);
+  input = { name: "nyan", desc: false };
+  expect(obj.check(input)).toBe(input);
+  input = { name: "nyan", desc: Symbol(42) };
+  expect(() => obj.check(input)).toThrow(
+    "expected 'string|number|boolean' got 'symbol'",
+  );
+});
