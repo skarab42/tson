@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import * as t from "../src";
+import { t } from "../src";
 
 test("unknown()", () => {
   expect(t.unknown().check(42)).toBe(42);
@@ -34,24 +34,28 @@ test("symbol()", () => {
 
 test("func()", () => {
   const f = (p: string) => p;
-  expect(t.func().check(f)).toBe(f);
-  expect(() => t.func().check(42)).toThrow("expected 'function' got 'number'");
+  expect(t.function().check(f)).toBe(f);
+  expect(() => t.function().check(42)).toThrow(
+    "expected 'function' got 'number'",
+  );
 });
 
 test("nul()", () => {
-  expect(t.nul().check(null)).toBe(null);
-  expect(() => t.nul().check(0)).toThrow("expected 'null' got 'number'");
-  expect(() => t.nul().check(undefined)).toThrow(
+  expect(t.null().check(null)).toBe(null);
+  expect(() => t.null().check(0)).toThrow("expected 'null' got 'number'");
+  expect(() => t.null().check(undefined)).toThrow(
     "expected 'null' got 'undefined'",
   );
 });
 
 test("undef()", () => {
-  expect(t.undef().check(undefined)).toBe(undefined);
-  expect(() => t.undef().check(null)).toThrow(
+  expect(t.undefined().check(undefined)).toBe(undefined);
+  expect(() => t.undefined().check(null)).toThrow(
     "expected 'undefined' got 'null'",
   );
-  expect(() => t.undef().check(0)).toThrow("expected 'undefined' got 'number'");
+  expect(() => t.undefined().check(0)).toThrow(
+    "expected 'undefined' got 'number'",
+  );
 });
 
 test("boolean()", () => {
@@ -194,7 +198,7 @@ test("union(): with optional in object", () => {
 });
 
 test("union() as optional", () => {
-  const optional = t.union([t.string(), t.undef()]);
+  const optional = t.union([t.string(), t.undefined()]);
   expect(optional.check("42")).toBe("42");
   expect(optional.check(undefined)).toBe(undefined);
   expect(() => optional.check(42)).toThrow(

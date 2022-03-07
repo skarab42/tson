@@ -1,46 +1,38 @@
-import {
-  boolean,
-  number,
-  object,
-  optional,
-  string,
-  union,
-  unknown,
-} from "../src";
+import { t } from "../src";
 import { InferType } from "../src/types";
 
-const unk = unknown();
-const str = string();
-const num = number();
-const boo = boolean();
+const unk = t.unknown();
+const str = t.string();
+const num = t.number();
+const boo = t.boolean();
 
-const uni = union([str, num, boo, optional(str)]);
+const uni = t.union([str, num, boo, t.optional(str)]);
 
 // const life = uni.check(42);
 
-const data = object({
-  desc: optional(string()),
-  root: boolean(),
+const data = t.object({
+  desc: t.optional(t.string()),
+  root: t.boolean(),
   uni,
 });
 
-const obj = object({
+const obj = t.object({
   name: str,
-  size: optional(num),
-  desc: string(),
+  size: t.optional(num),
+  desc: t.string(),
   data,
-  data2: optional(
-    object({
-      desc: string(),
-      root: boolean(),
+  data2: t.optional(
+    t.object({
+      desc: t.string(),
+      root: t.boolean(),
     }),
   ),
-  plus: object({
-    desc2: string(),
-    root2: boolean(),
-    plus2: object({
-      desc2: optional(string()),
-      root2: boolean(),
+  plus: t.object({
+    desc2: t.string(),
+    root2: t.boolean(),
+    plus2: t.object({
+      desc2: t.optional(t.string()),
+      root2: t.boolean(),
     }),
   }),
 });

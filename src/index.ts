@@ -5,7 +5,6 @@ import {
   TypeCheckError,
 } from "./errors";
 import {
-  CheckType,
   InferTuple,
   InferType,
   ObjectType,
@@ -14,17 +13,9 @@ import {
   UnwrapSchema,
   UnwrapTuple,
 } from "./types";
-import { typeOf } from "./util";
+import { check } from "./util";
 
-function check<TReturn>(type: CheckType, input: unknown): TReturn {
-  if (typeOf(input) === type) {
-    return input as TReturn;
-  }
-
-  throw new TypeCheckError(type, input);
-}
-
-export function unknown(): Type<unknown> {
+function unknownType(): Type<unknown> {
   return {
     check(input: unknown): unknown {
       return input;
@@ -32,7 +23,7 @@ export function unknown(): Type<unknown> {
   };
 }
 
-export function string(): Type<string> {
+function stringType(): Type<string> {
   return {
     check(input: unknown): string {
       return check<string>("string", input);
@@ -40,7 +31,7 @@ export function string(): Type<string> {
   };
 }
 
-export function number(): Type<number> {
+function numberType(): Type<number> {
   return {
     check(input: unknown): number {
       return check<number>("number", input);
@@ -48,7 +39,7 @@ export function number(): Type<number> {
   };
 }
 
-export function boolean(): Type<boolean> {
+function booleanType(): Type<boolean> {
   return {
     check(input: unknown): boolean {
       return check<boolean>("boolean", input);
@@ -56,7 +47,7 @@ export function boolean(): Type<boolean> {
   };
 }
 
-export function bigint(): Type<bigint> {
+function bigintType(): Type<bigint> {
   return {
     check(input: unknown): bigint {
       return check<bigint>("bigint", input);
@@ -64,7 +55,7 @@ export function bigint(): Type<bigint> {
   };
 }
 
-export function symbol(): Type<symbol> {
+function symbolType(): Type<symbol> {
   return {
     check(input: unknown): symbol {
       return check<symbol>("symbol", input);
@@ -72,7 +63,7 @@ export function symbol(): Type<symbol> {
   };
 }
 
-export function func(): Type<Function> {
+function functionType(): Type<Function> {
   return {
     check<TType extends Function>(input: TType): TType {
       return check<TType>("function", input);
@@ -80,7 +71,7 @@ export function func(): Type<Function> {
   };
 }
 
-export function nul(): Type<null> {
+function nullType(): Type<null> {
   return {
     check(input: unknown): null {
       return check<null>("null", input);
@@ -88,7 +79,7 @@ export function nul(): Type<null> {
   };
 }
 
-export function undef(): Type<undefined> {
+function undefinedType(): Type<undefined> {
   return {
     check(input: unknown): undefined {
       return check<undefined>("undefined", input);
@@ -96,7 +87,7 @@ export function undef(): Type<undefined> {
   };
 }
 
-export function array<TType extends Type<unknown>>(
+function arrayType<TType extends Type<unknown>>(
   type: TType,
 ): Type<InferType<TType>[]> {
   return {
@@ -124,7 +115,7 @@ export function array<TType extends Type<unknown>>(
   };
 }
 
-export function tuple<TTypes extends Type<unknown>[]>(
+function tupleType<TTypes extends Type<unknown>[]>(
   ...types: TTypes
 ): Type<UnwrapTuple<TTypes>> {
   return {
@@ -156,7 +147,7 @@ export function tuple<TTypes extends Type<unknown>[]>(
   };
 }
 
-export function object<TInputSchema extends Schema>(
+function objectType<TInputSchema extends Schema>(
   schema: TInputSchema,
 ): ObjectType<UnwrapSchema<TInputSchema>> {
   return {
@@ -185,7 +176,7 @@ export function object<TInputSchema extends Schema>(
   };
 }
 
-export function optional<TType extends Type<InferType<TType>>>(
+function optionalType<TType extends Type<InferType<TType>>>(
   type: TType,
 ): Type<InferType<TType> | undefined> {
   return {
@@ -200,7 +191,7 @@ export function optional<TType extends Type<InferType<TType>>>(
   };
 }
 
-export function union<TTypes extends Type<InferTuple<TTypes>>[]>(
+function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
   types: TTypes,
 ): Type<InferTuple<TTypes>> {
   return {
@@ -220,12 +211,27 @@ export function union<TTypes extends Type<InferTuple<TTypes>>[]>(
       });
 
       if (errorCount === types.length) {
-        throw new Error(
-          `expected '${[...expectTypes].join("|")}' got '${typeOf(input)}'`,
-        );
+        throw new TypeCheckError([...expectTypes].join("|"), input);
       }
 
       return input as InferTuple<TTypes>;
     },
   };
 }
+
+export const t = {
+  unknown: unknownType,
+  string: stringType,
+  number: numberType,
+  boolean: booleanType,
+  bigint: bigintType,
+  symbol: symbolType,
+  function: functionType,
+  null: nullType,
+  undefined: undefinedType,
+  array: arrayType,
+  tuple: tupleType,
+  object: objectType,
+  optional: optionalType,
+  union: unionType,
+};

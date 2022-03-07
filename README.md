@@ -20,31 +20,31 @@ _`yarn` and `npm` also works_
 ## ES and CommonJS module
 
 ```ts
-import * as tson from "tson";
+import { t } from "tson";
 ```
 
 ```ts
-const tson = require("tson");
+const { t } = require("tson");
 ```
 
 # Examples
 
 ```ts
-import { string } from "tson";
+import { t } from "tson";
 
-const name = string();
+const name = t.string();
 
 name.check("nyan"); // return "nyan"
 name.check(42); // throw TypeCheckError
 ```
 
 ```ts
-import { object, string, number boolean } from "tson";
+import { t } from "tson";
 
-const user = object({
-  name: string(),
-  age: number(),
-  admin: boolean(),
+const user = t.object({
+  name: t.string(),
+  age: t.number(),
+  admin: t.boolean(),
 });
 
 user.check({ name: "nyan", age: 42, admin: true });
@@ -63,11 +63,11 @@ type User = InferType<typeof user>;
 - `boolean()`
 - `symbol()`
 
-- `nul()`
-- `undef()`
+- `null()`
 - `unknown()`
+- `undefined()`
 
-- `func()`
+- `function()`
 
 - `array(type)`
 - `tuple(...type)`
@@ -81,23 +81,23 @@ type User = InferType<typeof user>;
 # array(type)
 
 ```ts
-const arr1 = array(string()); // string[]
-const arr2 = array(boolean()); // boolean[]
+const arr1 = t.array(t.string()); // string[]
+const arr2 = t.array(t.boolean()); // boolean[]
 ```
 
 # tuple(...type)
 
 ```ts
-const tpl = tuple(string(), number()); // [string, number]
+const tpl = t.tuple(t.string(), t.number()); // [string, number]
 ```
 
 # object(object)
 
 ```ts
-const user = object({
-  name: string(),
-  age: number(),
-  admin: boolean(),
+const user = t.object({
+  name: t.string(),
+  age: t.number(),
+  admin: t.boolean(),
 });
 
 type User = InferType<typeof user>;
@@ -107,15 +107,15 @@ type User = InferType<typeof user>;
 # union(type[])
 
 ```ts
-const uni = union(string(), number()); // string | number
+const uni = t.union(t.string(), t.number()); // string | number
 ```
 
 # optional(type)
 
 ```ts
-const user = object({
-  name: string(),
-  age: optional(number()),
+const user = t.object({
+  name: t.string(),
+  age: t.optional(t.number()),
 });
 // { name: string, age?: number }
 ```
