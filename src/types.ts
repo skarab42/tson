@@ -8,7 +8,10 @@ export type CheckType =
   | "symbol"
   | "function"
   | "null"
-  | "undefined";
+  | "undefined"
+  | "array"
+  | "tuple";
+
 export type Type<TReturn> = { check(input: unknown): TReturn };
 export type Schema = Record<string, Type<unknown>>;
 export type ObjectType<TReturn> = Type<TReturn> & {
@@ -32,6 +35,10 @@ export type InferSchema<TSchema extends Schema> = {
 };
 
 export type InferTuple<TTypes extends unknown[]> = InferType<TTypes[number]>;
+
+export type UnwrapTuple<TType extends Type<unknown>[]> = {
+  [Key in keyof TType]: InferType<TType[Key]>;
+};
 
 export type ExtractType<TType, TUnion> = {
   [Key in keyof TType]-?: TUnion extends TType[Key] ? Key : never;

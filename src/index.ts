@@ -1,4 +1,9 @@
-import { TypeCheckError } from "./errors";
+import {
+  ArrayTypeCheckError,
+  LengthMismatchError,
+  ObjectTypeCheckError,
+  TypeCheckError,
+} from "./errors";
 import {
   AnyFunction,
   CheckType,
@@ -8,19 +13,16 @@ import {
   Schema,
   Type,
   UnwrapSchema,
+  UnwrapTuple,
 } from "./types";
 import { typeOf } from "./util";
 
-function check<TReturn>(
-  type: CheckType,
-  input: unknown,
-  path?: string[],
-): TReturn {
+function check<TReturn>(type: CheckType, input: unknown): TReturn {
   if (typeOf(input) === type) {
     return input as TReturn;
   }
 
-  throw new TypeCheckError(type, input, path);
+  throw new TypeCheckError(type, input);
 }
 
 export function unknown(): Type<unknown> {
@@ -95,6 +97,66 @@ export function undef(): Type<undefined> {
   };
 }
 
+export function array<TType extends Type<unknown>>(
+  type: TType,
+): Type<InferType<TType>[]> {
+  return {
+    check(input: unknown[]): InferType<TType>[] {
+      check<InferType<TType>[]>("array", input);
+
+      let lastId = 0;
+
+      try {
+        input.forEach((value, id) => {
+          lastId = id;
+          type.check(value);
+        });
+      } catch (error) {
+        if (error instanceof TypeCheckError) {
+          const path = [lastId.toString(), ...error.path];
+          throw new ArrayTypeCheckError(error.expected, error.input, path);
+        }
+
+        throw error;
+      }
+
+      return input as InferType<TType>[];
+    },
+  };
+}
+
+export function tuple<TTypes extends Type<unknown>[]>(
+  ...types: TTypes
+): Type<UnwrapTuple<TTypes>> {
+  return {
+    check(input: unknown[]): UnwrapTuple<TTypes> {
+      check<UnwrapTuple<TTypes>>("array", input);
+
+      if (types.length !== input.length) {
+        throw new LengthMismatchError(types.length, input.length);
+      }
+
+      let lastId = 0;
+
+      try {
+        types.forEach((type, index) => {
+          lastId = index;
+          type.check(input[index]);
+        });
+      } catch (error) {
+        if (error instanceof TypeCheckError) {
+          const path = [lastId.toString(), ...error.path];
+          throw new ArrayTypeCheckError(error.expected, error.input, path);
+        }
+
+        throw error;
+      }
+
+      return input as UnwrapTuple<TTypes>;
+    },
+  };
+}
+
 export function object<TInputSchema extends Schema>(
   schema: TInputSchema,
 ): ObjectType<UnwrapSchema<TInputSchema>> {
@@ -115,7 +177,7 @@ export function object<TInputSchema extends Schema>(
       } catch (error) {
         if (error instanceof TypeCheckError) {
           const path = [lastCheckedKey, ...error.path];
-          throw new TypeCheckError(error.expected, error.input, path);
+          throw new ObjectTypeCheckError(error.expected, error.input, path);
         }
 
         throw error;
