@@ -1,5 +1,5 @@
 export function typeOf(input: unknown): string {
-  if (input === undefined) {
+  if (typeof input === "undefined") {
     return "undefined";
   }
 

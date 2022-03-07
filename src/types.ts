@@ -18,8 +18,6 @@ export type ObjectType<TReturn> = Type<TReturn> & {
   schema: Schema;
 };
 
-export type AnyFunction = () => void;
-
 export type Unwrap<TInput> = TInput extends Record<string, unknown>
   ? { [Key in keyof TInput]: TInput[Key] }
   : TInput;

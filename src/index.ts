@@ -5,7 +5,6 @@ import {
   TypeCheckError,
 } from "./errors";
 import {
-  AnyFunction,
   CheckType,
   InferTuple,
   InferType,
@@ -73,9 +72,9 @@ export function symbol(): Type<symbol> {
   };
 }
 
-export function func(): Type<AnyFunction> {
+export function func(): Type<Function> {
   return {
-    check<TType extends AnyFunction>(input: TType): TType {
+    check<TType extends Function>(input: TType): TType {
       return check<TType>("function", input);
     },
   };
@@ -192,7 +191,7 @@ export function optional<TType extends Type<InferType<TType>>>(
   return {
     ...type,
     check(input: unknown): InferType<TType> | undefined {
-      if (input === undefined) {
+      if (typeof input === "undefined") {
         return undefined;
       }
 
@@ -230,48 +229,3 @@ export function union<TTypes extends Type<InferTuple<TTypes>>[]>(
     },
   };
 }
-
-// ---
-
-// const unk = unknown();
-// const str = string();
-// const num = number();
-// const boo = boolean();
-
-// const uni = union([str, num, boo, optional(str)]);
-
-// // const life = uni.check(42);
-
-// const data = object({
-//   desc: optional(string()),
-//   root: boolean(),
-//   uni,
-// });
-
-// const obj = object({
-//   name: str,
-//   size: optional(num),
-//   desc: string(),
-//   data,
-//   data2: optional(
-//     object({
-//       desc: string(),
-//       root: boolean(),
-//     }),
-//   ),
-//   plus: object({
-//     desc2: string(),
-//     root2: boolean(),
-//     plus2: object({
-//       desc2: optional(string()),
-//       root2: boolean(),
-//     }),
-//   }),
-// });
-
-// export type Unk = InferType<typeof unk>;
-// export type Str = InferType<typeof str>;
-// export type Num = InferType<typeof num>;
-// export type Boo = InferType<typeof boo>;
-// export type Obj = InferType<typeof obj>;
-// export type Uni = InferType<typeof uni>;

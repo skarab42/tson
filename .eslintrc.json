@@ -6,6 +6,7 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended"
   ],
+  "plugins": ["no-only-tests"],
   "env": {
     "node": true,
     "browser": true
@@ -18,6 +19,15 @@
   "rules": {
     "no-alert": "error",
     "no-console": "warn",
-    "no-debugger": "warn"
+    "no-debugger": "warn",
+    "no-only-tests/no-only-tests": "error",
+    "@typescript-eslint/prefer-ts-expect-error": ["error"],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "extendDefaults": true,
+        "types": { "Function": false }
+      }
+    ]
   }
 }

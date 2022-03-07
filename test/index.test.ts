@@ -130,8 +130,7 @@ test("object(): with error on second level", () => {
 
 test("object(): with invalid input", () => {
   const input = { life: 42, name: ["prout"] };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error input type not assignable
   expect(() => t.object(input).check(input)).toThrow(
     "val.check is not a function",
   );
