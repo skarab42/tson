@@ -5,11 +5,18 @@ import {
   TypeCheckError,
 } from "./errors";
 import {
+  EnumKey,
+  EnumLike,
+  EnumOrFirstValue,
+  EnumType,
+  EnumValues,
+  FakeEnum,
   InferTuple,
   InferType,
   ObjectType,
   Schema,
   Type,
+  Unwrap,
   UnwrapSchema,
   UnwrapTuple,
 } from "./types";
@@ -219,6 +226,88 @@ function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
   };
 }
 
+function enumType<
+  TKey extends string,
+  TValues extends [TKey, ...TKey[]],
+  TUnion = TValues[number],
+>(values: TValues): EnumType<FakeEnum<TValues>, TValues, TUnion>;
+
+function enumType<
+  TKey extends string,
+  TValues extends Readonly<[TKey, ...TKey[]]>,
+  TUnion = TValues[number],
+>(values: TValues): EnumType<FakeEnum<TValues>, TValues, TUnion>;
+
+function enumType<TValues extends EnumValues, TUnion = TValues[number]>(
+  ...values: TValues
+): EnumType<FakeEnum<TValues>, TValues, TUnion>;
+
+function enumType<
+  Key extends string,
+  Value extends EnumKey,
+  TEnum extends Record<Key, Value>,
+  TUnion = TEnum[keyof TEnum],
+>(anEnum: TEnum): EnumType<Unwrap<TEnum>, TEnum, TUnion>;
+
+function enumType<
+  TEnumOrFirstValue extends EnumOrFirstValue,
+  TNextValues extends string[] | EnumValues,
+>(
+  enumOrFirstValue: TEnumOrFirstValue,
+  ...nextValues: TNextValues
+): EnumType<unknown, unknown, unknown> {
+  let enumObj: EnumLike = {};
+  let values: (string | number)[] = [];
+
+  if (typeof enumOrFirstValue === "string") {
+    values = [enumOrFirstValue, ...nextValues];
+  } else if (Array.isArray(enumOrFirstValue)) {
+    values = [...enumOrFirstValue, ...nextValues];
+  } else if (typeof enumOrFirstValue === "object") {
+    enumObj = { ...enumOrFirstValue } as EnumLike;
+    Object.entries(enumObj).forEach(([, value]) => {
+      if (typeof enumObj[value] !== "number") {
+        values.push(value);
+      }
+    });
+  }
+
+  if (values.length === 0) {
+    throw new TypeCheckError("enum", enumOrFirstValue); // TODO better error
+  }
+
+  if (Object.keys(enumObj).length === 0) {
+    values.forEach((value) => {
+      enumObj[value] = value;
+    });
+  }
+
+  const schema = unionType([stringType(), numberType()]);
+
+  return {
+    enum: Object.freeze(enumObj),
+    options: Object.freeze(values),
+    check(input: unknown) {
+      const value = schema.check(input);
+
+      if (values.includes(value) === false) {
+        throw new TypeCheckError(values.join("|"), input);
+      }
+
+      return value;
+    },
+  };
+}
+
+function nativeEnumType<
+  Key extends string,
+  Value extends EnumKey,
+  TEnum extends Record<Key, Value>,
+  TUnion = TEnum[keyof TEnum],
+>(anEnum: TEnum): EnumType<Unwrap<TEnum>, TEnum, TUnion> {
+  return enumType(anEnum);
+}
+
 export const t = {
   unknown: unknownType,
   string: stringType,
@@ -234,4 +323,6 @@ export const t = {
   object: objectType,
   optional: optionalType,
   union: unionType,
+  enum: enumType,
+  nativeEnum: nativeEnumType,
 };

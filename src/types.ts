@@ -60,3 +60,48 @@ export type UnwrapOptional<TType> = Unwrap<InferOptional<TType>>;
 export type UnwrapSchema<TInputSchema extends Schema> = Unwrap<
   UnwrapOptional<InferSchema<TInputSchema>>
 >;
+
+export type Writable<TType> = { -readonly [Key in keyof TType]: TType[Key] };
+
+export type EnumKey = string | number;
+
+export type EnumLike = Record<string, string | number>;
+
+export type EnumValues = readonly [string, ...string[]];
+
+export type EnumOrFirstValue = string | string[] | EnumValues | EnumLike;
+
+export type EnumType<TType, TValues, TUnion> = {
+  enum: TType;
+  options: TValues;
+  check(input: unknown): TUnion;
+};
+
+export type StringEnumRecord<TValues extends EnumValues> = {
+  [Key in keyof TValues]: TValues[Key] extends string
+    ? Record<TValues[Key], TValues[Key]>
+    : never;
+};
+
+export type NumberEnumRecord<TValues extends EnumValues> = {
+  [Key in keyof TValues]: TValues[Key] extends string
+    ? Record<TValues[Key], Key>
+    : never;
+};
+
+export type EnumRecord<
+  TValues extends EnumValues,
+  TValue extends EnumKey,
+> = TValue extends string
+  ? StringEnumRecord<TValues>
+  : NumberEnumRecord<TValues>;
+
+export type MergeEnumRecord<TValues> = (
+  TValues extends unknown ? (values: TValues) => void : never
+) extends (values: infer TType) => void
+  ? TType
+  : never;
+
+export type FakeEnum<TValues extends EnumValues> = Unwrap<
+  Readonly<MergeEnumRecord<InferTuple<Writable<EnumRecord<TValues, string>>>>>
+>;

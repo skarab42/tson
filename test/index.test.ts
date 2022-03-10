@@ -74,6 +74,12 @@ test("array()", () => {
   );
 });
 
+test("array() invalid input", () => {
+  // @ts-expect-error invalid input
+  const schema = t.array(true);
+  expect(() => schema.check(["42"])).toThrow("type.check is not a function");
+});
+
 test("tuple()", () => {
   const input: [number, string, boolean, string] = [42, "plop", true, "42"];
   const schema = t.tuple(t.number(), t.string(), t.boolean(), t.string());
@@ -87,6 +93,12 @@ test("tuple()", () => {
   expect(() => schema.check([42, "plop", true])).toThrow(
     "expected length to be '4' got '3'",
   );
+});
+
+test("tuple() invalid input", () => {
+  // @ts-expect-error invalid input
+  const schema = t.tuple(true);
+  expect(() => schema.check(["42"])).toThrow("type.check is not a function");
 });
 
 test("object()", () => {
