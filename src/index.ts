@@ -1,8 +1,8 @@
 import {
-  ArrayTypeCheckError,
+  ArrayTypeParseError,
   LengthMismatchError,
-  ObjectTypeCheckError,
-  TypeCheckError,
+  ObjectTypeParseError,
+  TypeParseError,
 } from "./errors";
 import {
   EnumKey,
@@ -20,19 +20,19 @@ import {
   UnwrapSchema,
   UnwrapTuple,
 } from "./types";
-import { check } from "./util";
+import { parse } from "./util";
 
 function neverType(): Type<never> {
   return {
-    check(input: unknown): never {
-      throw new TypeCheckError("never", input);
+    parse(input: unknown): never {
+      throw new TypeParseError("never", input);
     },
   };
 }
 
 function unknownType(): Type<unknown> {
   return {
-    check(input: unknown): unknown {
+    parse(input: unknown): unknown {
       return input;
     },
   };
@@ -40,64 +40,64 @@ function unknownType(): Type<unknown> {
 
 function stringType(): Type<string> {
   return {
-    check(input: unknown): string {
-      return check<string>("string", input);
+    parse(input: unknown): string {
+      return parse<string>("string", input);
     },
   };
 }
 
 function numberType(): Type<number> {
   return {
-    check(input: unknown): number {
-      return check<number>("number", input);
+    parse(input: unknown): number {
+      return parse<number>("number", input);
     },
   };
 }
 
 function booleanType(): Type<boolean> {
   return {
-    check(input: unknown): boolean {
-      return check<boolean>("boolean", input);
+    parse(input: unknown): boolean {
+      return parse<boolean>("boolean", input);
     },
   };
 }
 
 function bigintType(): Type<bigint> {
   return {
-    check(input: unknown): bigint {
-      return check<bigint>("bigint", input);
+    parse(input: unknown): bigint {
+      return parse<bigint>("bigint", input);
     },
   };
 }
 
 function symbolType(): Type<symbol> {
   return {
-    check(input: unknown): symbol {
-      return check<symbol>("symbol", input);
+    parse(input: unknown): symbol {
+      return parse<symbol>("symbol", input);
     },
   };
 }
 
 function functionType(): Type<Function> {
   return {
-    check<TType extends Function>(input: TType): TType {
-      return check<TType>("function", input);
+    parse<TType extends Function>(input: TType): TType {
+      return parse<TType>("function", input);
     },
   };
 }
 
 function nullType(): Type<null> {
   return {
-    check(input: unknown): null {
-      return check<null>("null", input);
+    parse(input: unknown): null {
+      return parse<null>("null", input);
     },
   };
 }
 
 function undefinedType(): Type<undefined> {
   return {
-    check(input: unknown): undefined {
-      return check<undefined>("undefined", input);
+    parse(input: unknown): undefined {
+      return parse<undefined>("undefined", input);
     },
   };
 }
@@ -106,20 +106,20 @@ function arrayType<TType extends Type<unknown>>(
   type: TType,
 ): Type<InferType<TType>[]> {
   return {
-    check(input: unknown[]): InferType<TType>[] {
-      check<InferType<TType>[]>("array", input);
+    parse(input: unknown[]): InferType<TType>[] {
+      parse<InferType<TType>[]>("array", input);
 
       let lastId = 0;
 
       try {
         input.forEach((value, id) => {
           lastId = id;
-          type.check(value);
+          type.parse(value);
         });
       } catch (error) {
-        if (error instanceof TypeCheckError) {
+        if (error instanceof TypeParseError) {
           const path = [lastId.toString(), ...error.path];
-          throw new ArrayTypeCheckError(error.expected, error.input, path);
+          throw new ArrayTypeParseError(error.expected, error.input, path);
         }
 
         throw error;
@@ -134,8 +134,8 @@ function tupleType<TTypes extends Type<unknown>[]>(
   ...types: TTypes
 ): Type<UnwrapTuple<TTypes>> {
   return {
-    check(input: unknown[]): UnwrapTuple<TTypes> {
-      check<UnwrapTuple<TTypes>>("array", input);
+    parse(input: unknown[]): UnwrapTuple<TTypes> {
+      parse<UnwrapTuple<TTypes>>("array", input);
 
       if (types.length !== input.length) {
         throw new LengthMismatchError(types.length, input.length);
@@ -146,12 +146,12 @@ function tupleType<TTypes extends Type<unknown>[]>(
       try {
         types.forEach((type, index) => {
           lastId = index;
-          type.check(input[index]);
+          type.parse(input[index]);
         });
       } catch (error) {
-        if (error instanceof TypeCheckError) {
+        if (error instanceof TypeParseError) {
           const path = [lastId.toString(), ...error.path];
-          throw new ArrayTypeCheckError(error.expected, error.input, path);
+          throw new ArrayTypeParseError(error.expected, error.input, path);
         }
 
         throw error;
@@ -167,22 +167,22 @@ function objectType<TInputSchema extends Schema>(
 ): ObjectType<UnwrapSchema<TInputSchema>> {
   return {
     schema,
-    check(input: unknown): UnwrapSchema<TInputSchema> {
-      let lastCheckedKey = "?";
+    parse(input: unknown): UnwrapSchema<TInputSchema> {
+      let lastParsedKey = "?";
 
       try {
-        const output = check<UnwrapSchema<TInputSchema>>("object", input);
+        const output = parse<UnwrapSchema<TInputSchema>>("object", input);
 
         Object.entries(schema).forEach(([key, val]) => {
-          lastCheckedKey = key;
-          val.check((input as TInputSchema)[key]);
+          lastParsedKey = key;
+          val.parse((input as TInputSchema)[key]);
         });
 
         return output;
       } catch (error) {
-        if (error instanceof TypeCheckError) {
-          const path = [lastCheckedKey, ...error.path];
-          throw new ObjectTypeCheckError(error.expected, error.input, path);
+        if (error instanceof TypeParseError) {
+          const path = [lastParsedKey, ...error.path];
+          throw new ObjectTypeParseError(error.expected, error.input, path);
         }
 
         throw error;
@@ -196,12 +196,12 @@ function optionalType<TType extends Type<InferType<TType>>>(
 ): Type<InferType<TType> | undefined> {
   return {
     ...type,
-    check(input: unknown): InferType<TType> | undefined {
+    parse(input: unknown): InferType<TType> | undefined {
       if (typeof input === "undefined") {
         return undefined;
       }
 
-      return type.check(input);
+      return type.parse(input);
     },
   };
 }
@@ -210,15 +210,15 @@ function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
   types: TTypes,
 ): Type<InferTuple<TTypes>> {
   return {
-    check(input: unknown): InferTuple<TTypes> {
+    parse(input: unknown): InferTuple<TTypes> {
       const expectTypes: Set<string> = new Set();
       let errorCount = 0;
 
       types.forEach((type) => {
         try {
-          type.check(input);
+          type.parse(input);
         } catch (error) {
-          if (error instanceof TypeCheckError) {
+          if (error instanceof TypeParseError) {
             expectTypes.add(error.expected);
           }
           errorCount++;
@@ -226,7 +226,7 @@ function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
       });
 
       if (errorCount === types.length) {
-        throw new TypeCheckError([...expectTypes].join("|"), input);
+        throw new TypeParseError([...expectTypes].join("|"), input);
       }
 
       return input as InferTuple<TTypes>;
@@ -281,7 +281,7 @@ function enumType<
   }
 
   if (values.length === 0) {
-    throw new TypeCheckError("enum", enumOrFirstValue); // TODO better error
+    throw new TypeParseError("enum", enumOrFirstValue); // TODO better error
   }
 
   if (Object.keys(enumObj).length === 0) {
@@ -295,11 +295,11 @@ function enumType<
   return {
     enum: Object.freeze(enumObj),
     options: Object.freeze(values),
-    check(input: unknown) {
-      const value = schema.check(input);
+    parse(input: unknown) {
+      const value = schema.parse(input);
 
       if (values.includes(value) === false) {
-        throw new TypeCheckError(values.join("|"), input);
+        throw new TypeParseError(values.join("|"), input);
       }
 
       return value;

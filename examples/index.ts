@@ -8,7 +8,7 @@ const boo = t.boolean();
 
 const uni = t.union([str, num, boo, t.optional(str)]);
 
-// const life = uni.check(42);
+// const life = uni.parse(42);
 
 const data = t.object({
   desc: t.optional(t.string()),

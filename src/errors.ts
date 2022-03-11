@@ -12,8 +12,8 @@ export class LengthMismatchError extends TypeError {
   }
 }
 
-export class TypeCheckError extends TypeError {
-  override name = "TypeCheckError";
+export class TypeParseError extends TypeError {
+  override name = "TypeParseError";
   readonly expected: string;
   readonly input: unknown;
   readonly path: string[];
@@ -26,8 +26,8 @@ export class TypeCheckError extends TypeError {
   }
 }
 
-export class ObjectTypeCheckError extends TypeCheckError {
-  override name = "ObjectTypeCheckError";
+export class ObjectTypeParseError extends TypeParseError {
+  override name = "ObjectTypeParseError";
 
   constructor(expected: string, input: unknown, path: string[]) {
     super(expected, input, path);
@@ -35,8 +35,8 @@ export class ObjectTypeCheckError extends TypeCheckError {
   }
 }
 
-export class ArrayTypeCheckError extends TypeCheckError {
-  override name = "ArrayTypeCheckError";
+export class ArrayTypeParseError extends TypeParseError {
+  override name = "ArrayTypeParseError";
 
   constructor(expected: string, input: unknown, path: string[]) {
     super(expected, input, path);

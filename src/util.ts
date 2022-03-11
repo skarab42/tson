@@ -1,5 +1,5 @@
-import { TypeCheckError } from "./errors";
-import { CheckType } from "./types";
+import { TypeParseError } from "./errors";
+import { ParseType } from "./types";
 
 export function typeOf(input: unknown): string {
   if (typeof input === "undefined") {
@@ -17,10 +17,10 @@ export function typeOf(input: unknown): string {
   return typeof input;
 }
 
-export function check<TReturn>(type: CheckType, input: unknown): TReturn {
+export function parse<TReturn>(type: ParseType, input: unknown): TReturn {
   if (typeOf(input) === type) {
     return input as TReturn;
   }
 
-  throw new TypeCheckError(type, input);
+  throw new TypeParseError(type, input);
 }

@@ -35,8 +35,8 @@ import { t } from "tson";
 
 const name = t.string();
 
-name.check("nyan"); // return "nyan"
-name.check(42); // throw TypeCheckError
+name.parse("nyan"); // return "nyan"
+name.parse(42); // throw TypeCheckError
 ```
 
 ```ts
@@ -48,7 +48,7 @@ const user = t.object({
   admin: t.boolean(),
 });
 
-user.check({ name: "nyan", age: 42, admin: true });
+user.parse({ name: "nyan", age: 42, admin: true });
 
 type User = InferType<typeof user>;
 // { name: string, age: number, admin: boolean }
@@ -181,11 +181,11 @@ myEnum.options[1]; // === "DOWN"
 ### Test enum values
 
 ```ts
-myEnum.check(myEnum.enum.LEFT); // => "LEFT"
-myEnum.check("LEFT"); // => "LEFT"
-myEnum.check("2"); // => "LEFT"
-myEnum.check(2); // => "LEFT"
-myEnum.check("PLOP"); // error: expected '0|1|2|3|UP|DOWN|LEFT|RIGHT' got 'string'
+myEnum.parse(myEnum.enum.LEFT); // => "LEFT"
+myEnum.parse("LEFT"); // => "LEFT"
+myEnum.parse("2"); // => "LEFT"
+myEnum.parse(2); // => "LEFT"
+myEnum.parse("PLOP"); // error: expected '0|1|2|3|UP|DOWN|LEFT|RIGHT' got 'string'
 ```
 
 ### Infer enum type
