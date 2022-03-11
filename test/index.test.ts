@@ -176,8 +176,38 @@ test("optional(string())", () => {
   const optional = t.optional(t.string());
   expect(optional.parse("42")).toBe("42");
   expect(optional.parse(undefined)).toBe(undefined);
-  expect(() => optional.parse(42)).toThrow("expected 'string' got 'number'");
-  expect(() => optional.parse(null)).toThrow("expected 'string' got 'null'");
+  expect(() => optional.parse(42)).toThrow(
+    "expected 'string|undefined' got 'number'",
+  );
+  expect(() => optional.parse(null)).toThrow(
+    "expected 'string|undefined' got 'null'",
+  );
+});
+
+test("optional(): with invalid input", () => {
+  // @ts-expect-error input type not assignable
+  expect(() => t.optional(42).parse(42)).toThrow(
+    "type.parse is not a function",
+  );
+});
+
+test("nullable(string())", () => {
+  const nullable = t.nullable(t.string());
+  expect(nullable.parse("42")).toBe("42");
+  expect(nullable.parse(null)).toBe(null);
+  expect(() => nullable.parse([42])).toThrow(
+    "expected 'string|null' got 'array'",
+  );
+  expect(() => nullable.parse(0)).toThrow(
+    "expected 'string|null' got 'number'",
+  );
+});
+
+test("nullable(): with invalid input", () => {
+  // @ts-expect-error input type not assignable
+  expect(() => t.nullable(42).parse(42)).toThrow(
+    "type.parse is not a function",
+  );
 });
 
 test("union()", () => {
@@ -203,7 +233,7 @@ test("union(): with optional", () => {
   const uni = t.optional(t.union([str, num, boo]));
   expect(uni.parse(undefined)).toBe(undefined);
   expect(() => uni.parse(null)).toThrow(
-    "expected 'string|number|boolean' got 'null'",
+    "expected 'string|number|boolean|undefined' got 'null'",
   );
 });
 
@@ -225,7 +255,7 @@ test("union(): with optional in object", () => {
   expect(obj.parse(input)).toBe(input);
   input = { name: "nyan", desc: Symbol(42) };
   expect(() => obj.parse(input)).toThrow(
-    "expected 'string|number|boolean' got 'symbol'",
+    "expected 'string|number|boolean|undefined' got 'symbol'",
   );
 });
 

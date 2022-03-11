@@ -204,7 +204,38 @@ function optionalType<TType extends Type<InferType<TType>>>(
         return undefined;
       }
 
-      return type.parse(input);
+      try {
+        return type.parse(input);
+      } catch (error) {
+        if (error instanceof TypeParseError) {
+          throw new TypeParseError(`${error.expected}|undefined`, input);
+        }
+
+        throw error;
+      }
+    },
+  };
+}
+
+function nullableType<TType extends Type<InferType<TType>>>(
+  type: TType,
+): Type<InferType<TType> | null> {
+  return {
+    ...type,
+    parse(input: unknown): InferType<TType> | null {
+      if (input === null) {
+        return null;
+      }
+
+      try {
+        return type.parse(input);
+      } catch (error) {
+        if (error instanceof TypeParseError) {
+          throw new TypeParseError(`${error.expected}|null`, input);
+        }
+
+        throw error;
+      }
     },
   };
 }
@@ -458,6 +489,7 @@ export const t = {
   tuple: tupleType,
   object: objectType,
   optional: optionalType,
+  nullable: nullableType,
   union: unionType,
   enum: enumType,
   nativeEnum: nativeEnumType,
