@@ -1,6 +1,6 @@
 # tson
 
-Type Safe Object Notation & Validation
+**Type Safe Object Notation & Validation**
 
 📌 Work in Progress, not ready for production...
 
@@ -54,11 +54,14 @@ type User = InferType<typeof user>;
 // { name: string, age: number, admin: boolean }
 ```
 
+# Table of contents
+
 - [tson](#tson)
   - [Features](#features)
 - [Install](#install)
   - [ES and CommonJS module](#es-and-commonjs-module)
 - [Examples](#examples)
+- [Table of contents](#table-of-contents)
 - [API](#api)
   - [string()](#string)
   - [number()](#number)
@@ -70,6 +73,13 @@ type User = InferType<typeof user>;
   - [undefined()](#undefined)
   - [function()](#function)
   - [literal(value)](#literalvalue)
+  - [nan()](#nan)
+  - [infinity()](#infinity)
+  - [finite()](#finite)
+  - [integer()](#integer)
+  - [unsignedInteger()](#unsignedinteger)
+  - [unsignedNumber()](#unsignednumber)
+  - [literal(value)](#literalvalue-1)
   - [array(type)](#arraytype)
   - [tuple(...type)](#tupletype)
   - [object(object)](#objectobject)
@@ -107,6 +117,26 @@ type User = InferType<typeof user>;
 ## undefined()
 
 ## function()
+
+## literal(value)
+
+## nan()
+
+## infinity()
+
+## finite()
+
+## integer()
+
+Alias: `int()`
+
+## unsignedInteger()
+
+Alias: `uinteger()`, `uint()`
+
+## unsignedNumber()
+
+Alias: `unumber()`
 
 ## literal(value)
 
@@ -270,7 +300,7 @@ const myEnum = t.enum(MyEnum);
 
 ## nativeEnum(enum)
 
-Alias of enum(enum)
+Alias: `enum(enum)`
 
 ```ts
 enum MyEnum {
