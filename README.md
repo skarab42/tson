@@ -69,6 +69,7 @@ type User = InferType<typeof user>;
   - [unknown()](#unknown)
   - [undefined()](#undefined)
   - [function()](#function)
+  - [literal(value)](#literalvalue)
   - [array(type)](#arraytype)
   - [tuple(...type)](#tupletype)
   - [object(object)](#objectobject)
@@ -106,6 +107,16 @@ type User = InferType<typeof user>;
 ## undefined()
 
 ## function()
+
+## literal(value)
+
+```ts
+const life = t.literal(42);
+const love = t.literal(true);
+const name = t.literal("nyan");
+
+life.value; // type => 42
+```
 
 ## array(type)
 

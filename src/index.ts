@@ -13,6 +13,8 @@ import {
   FakeEnum,
   InferTuple,
   InferType,
+  Literal,
+  LiteralType,
   ObjectType,
   Schema,
   Type,
@@ -20,7 +22,7 @@ import {
   UnwrapSchema,
   UnwrapTuple,
 } from "./types";
-import { parse } from "./util";
+import { parse, typeOf } from "./util";
 
 function neverType(): Type<never> {
   return {
@@ -316,6 +318,33 @@ function nativeEnumType<
   return enumType(anEnum);
 }
 
+function literalType<TType extends Literal>(value: TType): LiteralType<TType> {
+  const schema = unionType([
+    stringType(),
+    numberType(),
+    bigintType(),
+    booleanType(),
+    symbolType(),
+    nullType(),
+    undefinedType(),
+  ]);
+
+  schema.parse(value);
+
+  return {
+    value,
+    parse(input: unknown): TType {
+      schema.parse(input);
+
+      if (input !== value) {
+        throw new TypeParseError(typeOf(value), input);
+      }
+
+      return input as TType;
+    },
+  };
+}
+
 export const t = {
   never: neverType,
   unknown: unknownType,
@@ -329,6 +358,7 @@ export const t = {
   null: nullType,
   undefined: undefinedType,
   void: undefinedType,
+  literal: literalType,
   array: arrayType,
   tuple: tupleType,
   object: objectType,

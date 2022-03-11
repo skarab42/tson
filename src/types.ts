@@ -105,3 +105,16 @@ export type MergeEnumRecord<TValues> = (
 export type FakeEnum<TValues extends EnumValues> = Unwrap<
   Readonly<MergeEnumRecord<InferTuple<Writable<EnumRecord<TValues, string>>>>>
 >;
+
+export type Literal =
+  | boolean
+  | string
+  | number
+  | bigint
+  | symbol
+  | null
+  | undefined;
+
+export type LiteralType<TReturn> = Type<TReturn> & {
+  value: TReturn;
+};
