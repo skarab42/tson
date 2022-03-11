@@ -102,7 +102,7 @@ type User = InferType<typeof user>;
   - [nativeEnum(enum)](#nativeenumenum)
   - [instanceof(type)](#instanceoftype)
   - [date()](#date)
-- [Contributing 💜](#contributing-)
+  - [record(type)](#recordtype)
 
 # API
 
@@ -378,6 +378,14 @@ t.date().parse("2022-01-12T00:00:00.000Z"); // passes
 t.date().parse("not a string date"); // fail
 ```
 
+## record(type)
+
+```ts
+t.record(t.string()); // { [x: string]: string }
+t.record(t.number()) // { [x: string]: number }
+t.record(t.date()) // { [x: string]:  Date }
+
 # Contributing 💜
 
 See [CONTRIBUTING.md](https://github.com/skarab42/tson/blob/main/CONTRIBUTING.md)
+```

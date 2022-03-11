@@ -213,6 +213,24 @@ function objectType<TInputSchema extends Schema>(
   };
 }
 
+function recordType<
+  TType extends Type<unknown>,
+  TReturn = { [key: string]: InferType<TType> },
+>(type: TType): Type<TReturn> {
+  parse<object>("object", type);
+
+  return {
+    parse(input: unknown) {
+      const schema: Schema = {};
+      const inputObj = parse<TReturn>("object", input);
+
+      Object.keys(inputObj).forEach((key) => (schema[key] = type));
+
+      return objectType(schema).parse(input) as TReturn;
+    },
+  };
+}
+
 function optionalType<TType extends Type<InferType<TType>>>(
   type: TType,
 ): Type<InferType<TType> | undefined> {
@@ -542,4 +560,5 @@ export const t = {
   unumber: unsignedNumberType,
   instanceof: instanceOfType,
   date: dateType,
+  record: recordType,
 };
