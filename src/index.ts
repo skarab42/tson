@@ -215,7 +215,7 @@ function objectType<TInputSchema extends Schema>(
 
 function recordType<
   TType extends Type<unknown>,
-  TReturn = { [key: string]: InferType<TType> },
+  TReturn = Record<string, InferType<TType>>,
 >(type: TType): Type<TReturn> {
   parse<object>("object", type);
 
