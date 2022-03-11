@@ -82,6 +82,8 @@ type User = InferType<typeof user>;
   - [literal(value)](#literalvalue-1)
   - [array(type)](#arraytype)
   - [tuple(...type)](#tupletype)
+  - [tuple(type[])](#tupletype-1)
+  - [tuple(type[] as const)](#tupletype-as-const)
   - [object(object)](#objectobject)
   - [union(type[ ])](#uniontype-)
   - [optional(type)](#optionaltype)
@@ -160,7 +162,27 @@ const arr2 = t.array(t.boolean()); // boolean[]
 ## tuple(...type)
 
 ```ts
-const tpl = t.tuple(t.string(), t.number()); // [string, number]
+const tpl = t.tuple(t.string(), t.number(), t.string()); // [string, number, string]
+```
+
+## tuple(type[])
+
+```ts
+const tpl = t.tuple([t.string(), t.number(), t.string()]); // [string, number, string]
+```
+
+💔 The following code does not work, TypeScript can not infer tuple values properly. Use the `as const` workaround to do this.
+
+```ts
+const types = [t.string(), t.number(), t.string()];
+const tpl = t.tuple(types); // [string, number, string]
+```
+
+## tuple(type[] as const)
+
+```ts
+const types = [t.string(), t.number(), t.string()] as const;
+const tpl = t.tuple(types); // [string, number, string]
 ```
 
 ## object(object)

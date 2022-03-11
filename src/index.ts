@@ -22,6 +22,7 @@ import {
   Unwrap,
   UnwrapSchema,
   UnwrapTuple,
+  Writable,
 } from "./types";
 import { instanceOf, parse, typeOf } from "./util";
 
@@ -133,12 +134,30 @@ function arrayType<TType extends Type<unknown>>(
   };
 }
 
+function tupleType<
+  TKey extends Type<unknown>,
+  TTypes extends readonly [TKey, ...TKey[]],
+>(types: TTypes): Type<UnwrapTuple<Writable<TTypes>>>;
+
 function tupleType<TTypes extends Type<unknown>[]>(
   ...types: TTypes
-): Type<UnwrapTuple<TTypes>> {
+): Type<UnwrapTuple<TTypes>>;
+
+function tupleType<
+  TTypesOrFirstType extends Type<unknown> | Type<unknown>[],
+  TNextTypes extends Type<unknown>[],
+>(typesOrFirstType: TTypesOrFirstType, ...nextTypes: TNextTypes) {
+  let types: Type<unknown>[] = [];
+
+  if (Array.isArray(typesOrFirstType)) {
+    types = [...typesOrFirstType, ...nextTypes];
+  } else {
+    types = [typesOrFirstType, ...nextTypes];
+  }
+
   return {
-    parse(input: unknown[]): UnwrapTuple<TTypes> {
-      parse<UnwrapTuple<TTypes>>("array", input);
+    parse(input: unknown[]) {
+      parse<typeof types>("array", input);
 
       if (types.length !== input.length) {
         throw new LengthMismatchError(types.length, input.length);
@@ -160,7 +179,7 @@ function tupleType<TTypes extends Type<unknown>[]>(
         throw error;
       }
 
-      return input as UnwrapTuple<TTypes>;
+      return input;
     },
   };
 }
