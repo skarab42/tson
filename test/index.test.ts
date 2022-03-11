@@ -241,11 +241,44 @@ test("nullable(): with invalid input", () => {
   );
 });
 
-test("union()", () => {
+test("union(...type)", () => {
+  const str = t.string();
+  const num = t.number();
+  const boo = t.boolean();
+  const uni = t.union(str, num, boo, str);
+  expect(uni.parse(42)).toBe(42);
+  expect(uni.parse("42")).toBe("42");
+  expect(uni.parse(40 + 2 === 42)).toBe(true);
+  expect(() => uni.parse(undefined)).toThrow(
+    "expected 'string|number|boolean' got 'undefined'",
+  );
+  expect(() => uni.parse(null)).toThrow(
+    "expected 'string|number|boolean' got 'null'",
+  );
+});
+
+test("union(type[])", () => {
   const str = t.string();
   const num = t.number();
   const boo = t.boolean();
   const uni = t.union([str, num, boo, str]);
+  expect(uni.parse(42)).toBe(42);
+  expect(uni.parse("42")).toBe("42");
+  expect(uni.parse(40 + 2 === 42)).toBe(true);
+  expect(() => uni.parse(undefined)).toThrow(
+    "expected 'string|number|boolean' got 'undefined'",
+  );
+  expect(() => uni.parse(null)).toThrow(
+    "expected 'string|number|boolean' got 'null'",
+  );
+});
+
+test("union(type[]) as const", () => {
+  const str = t.string();
+  const num = t.number();
+  const boo = t.boolean();
+  const types = [str, num, boo, str] as const;
+  const uni = t.union(types);
   expect(uni.parse(42)).toBe(42);
   expect(uni.parse("42")).toBe("42");
   expect(uni.parse(40 + 2 === 42)).toBe(true);

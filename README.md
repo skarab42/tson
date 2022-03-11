@@ -85,7 +85,9 @@ type User = InferType<typeof user>;
   - [tuple(type[])](#tupletype-1)
   - [tuple(type[] as const)](#tupletype-as-const)
   - [object(object)](#objectobject)
-  - [union(type[ ])](#uniontype-)
+  - [union(...type)](#uniontype)
+  - [union(type[])](#uniontype-1)
+  - [union(type[] as const)](#uniontype-as-const)
   - [optional(type)](#optionaltype)
   - [enum(...string)](#enumstring)
     - [Access enum properties](#access-enum-properties)
@@ -171,7 +173,7 @@ const tpl = t.tuple(t.string(), t.number(), t.string()); // [string, number, str
 const tpl = t.tuple([t.string(), t.number(), t.string()]); // [string, number, string]
 ```
 
-💔 The following code does not work, TypeScript can not infer tuple values properly. Use the `as const` workaround to do this.
+💔 The following code does not work, TypeScript can not infer array values properly. Use the `as const` workaround to do this.
 
 ```ts
 const types = [t.string(), t.number(), t.string()];
@@ -198,10 +200,30 @@ type User = InferType<typeof user>;
 // { name: string, age: number, admin: boolean }
 ```
 
-## union(type[ ])
+## union(...type)
 
 ```ts
 const uni = t.union(t.string(), t.number()); // string | number
+```
+
+## union(type[])
+
+```ts
+const tpl = t.union([t.string(), t.number(), t.string()]); // string | number
+```
+
+💔 The following code does not work, TypeScript can not infer array values properly. Use the `as const` workaround to do this.
+
+```ts
+const types = [t.string(), t.number(), t.string()];
+const tpl = t.union(types); // string | number
+```
+
+## union(type[] as const)
+
+```ts
+const types = [t.string(), t.number(), t.string()] as const;
+const tpl = t.union(types); // string | number
 ```
 
 ## optional(type)

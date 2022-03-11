@@ -259,11 +259,29 @@ function nullableType<TType extends Type<InferType<TType>>>(
   };
 }
 
-function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
-  types: TTypes,
-): Type<InferTuple<TTypes>> {
+function unionType<
+  TKey extends Type<unknown>,
+  TTypes extends readonly [TKey, ...TKey[]],
+>(types: TTypes): Type<InferTuple<Writable<TTypes>>>;
+
+function unionType<TTypes extends Type<unknown>[]>(
+  ...types: TTypes
+): Type<InferTuple<TTypes>>;
+
+function unionType<
+  TTypesOrFirstType extends Type<unknown> | Type<unknown>[],
+  TNextTypes extends Type<unknown>[],
+>(typesOrFirstType: TTypesOrFirstType, ...nextTypes: TNextTypes) {
+  let types: Type<unknown>[] = [];
+
+  if (Array.isArray(typesOrFirstType)) {
+    types = [...typesOrFirstType, ...nextTypes];
+  } else {
+    types = [typesOrFirstType, ...nextTypes];
+  }
+
   return {
-    parse(input: unknown): InferTuple<TTypes> {
+    parse(input: unknown) {
       const expectTypes: Set<string> = new Set();
       let errorCount = 0;
 
@@ -282,7 +300,7 @@ function unionType<TTypes extends Type<InferTuple<TTypes>>[]>(
         throw new TypeParseError([...expectTypes].join("|"), input);
       }
 
-      return input as InferTuple<TTypes>;
+      return input;
     },
   };
 }
