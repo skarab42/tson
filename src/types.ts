@@ -10,7 +10,9 @@ export type ParseType =
   | "null"
   | "undefined"
   | "array"
-  | "tuple";
+  | "tuple"
+  | "NaN"
+  | "Infinity";
 
 export type Type<TReturn> = { parse(input: unknown): TReturn };
 export type Schema = Record<string, Type<unknown>>;

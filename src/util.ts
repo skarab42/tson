@@ -14,6 +14,16 @@ export function typeOf(input: unknown): string {
     return "array";
   }
 
+  if (typeof input === "number") {
+    if (Number.isNaN(input)) {
+      return "NaN";
+    }
+
+    if (Number.isFinite(input) === false) {
+      return "Infinity";
+    }
+  }
+
   return typeof input;
 }
 

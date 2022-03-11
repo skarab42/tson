@@ -289,3 +289,96 @@ test("literal(...) invalid value", () => {
     "expected 'string|number|bigint|boolean|symbol|null|undefined' got 'array'",
   );
 });
+
+test("nan()", () => {
+  expect(t.nan().parse(NaN)).toBe(NaN);
+  expect(t.nan().parse(Number("forty-two"))).toBe(NaN);
+  expect(() => t.nan().parse(0)).toThrow("expected 'NaN' got 'number'");
+  expect(() => t.nan().parse(null)).toThrow("expected 'NaN' got 'null'");
+  expect(() => t.nan().parse(Infinity)).toThrow(
+    "expected 'NaN' got 'Infinity'",
+  );
+});
+
+test("infinity()", () => {
+  expect(t.infinity().parse(Infinity)).toBe(Infinity);
+  expect(t.infinity().parse(-Infinity)).toBe(-Infinity);
+  expect(t.infinity().parse(Number.MAX_VALUE * 42)).toBe(Infinity);
+  expect(() => t.infinity().parse(0)).toThrow(
+    "expected 'Infinity' got 'number'",
+  );
+  expect(() => t.infinity().parse(null)).toThrow(
+    "expected 'Infinity' got 'null'",
+  );
+});
+
+test("finite()", () => {
+  expect(t.finite().parse(0)).toBe(0);
+  expect(t.finite().parse(42)).toBe(42);
+  expect(t.finite().parse(-42)).toBe(-42);
+  expect(t.finite().parse(+42.42)).toBe(+42.42);
+  expect(t.finite().parse(-42.42)).toBe(-42.42);
+  expect(() => t.finite().parse(42n)).toThrow(
+    "expected 'finite number' got 'bigint'",
+  );
+  expect(() => t.finite().parse(null)).toThrow(
+    "expected 'finite number' got 'null'",
+  );
+  expect(() => t.finite().parse(Infinity)).toThrow(
+    "expected 'finite number' got 'Infinity'",
+  );
+});
+
+test("integer()", () => {
+  expect(t.integer().parse(0)).toBe(0);
+  expect(t.integer().parse(42)).toBe(42);
+  expect(t.integer().parse(-42)).toBe(-42);
+  expect(() => t.integer().parse(42n)).toThrow(
+    "expected 'integer' got 'bigint'",
+  );
+  expect(() => t.integer().parse(null)).toThrow(
+    "expected 'integer' got 'null'",
+  );
+  expect(() => t.integer().parse(Infinity)).toThrow(
+    "expected 'integer' got 'Infinity'",
+  );
+});
+
+test("unsignedInteger()", () => {
+  expect(t.unsignedInteger().parse(0)).toBe(0);
+  expect(t.unsignedInteger().parse(42)).toBe(42);
+  expect(() => t.unsignedInteger().parse(-42)).toThrow(
+    "expected 'unsigned integer' got 'number'",
+  );
+  expect(() => t.unsignedInteger().parse(0.1)).toThrow(
+    "expected 'unsigned integer' got 'number'",
+  );
+  expect(() => t.unsignedInteger().parse(42n)).toThrow(
+    "expected 'unsigned integer' got 'bigint'",
+  );
+  expect(() => t.unsignedInteger().parse(null)).toThrow(
+    "expected 'unsigned integer' got 'null'",
+  );
+  expect(() => t.unsignedInteger().parse(Infinity)).toThrow(
+    "expected 'unsigned integer' got 'Infinity'",
+  );
+});
+
+test("unsignedNumber()", () => {
+  expect(t.unsignedNumber().parse(0)).toBe(0);
+  expect(t.unsignedNumber().parse(42)).toBe(42);
+  expect(t.unsignedNumber().parse(0.1)).toBe(0.1);
+  expect(t.unsignedNumber().parse(42.42)).toBe(42.42);
+  expect(() => t.unsignedNumber().parse(-42)).toThrow(
+    "expected 'unsigned number' got 'number'",
+  );
+  expect(() => t.unsignedNumber().parse(42n)).toThrow(
+    "expected 'unsigned number' got 'bigint'",
+  );
+  expect(() => t.unsignedNumber().parse(null)).toThrow(
+    "expected 'unsigned number' got 'null'",
+  );
+  expect(() => t.unsignedNumber().parse(Infinity)).toThrow(
+    "expected 'unsigned number' got 'Infinity'",
+  );
+});
