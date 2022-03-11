@@ -22,6 +22,14 @@ import {
 } from "./types";
 import { check } from "./util";
 
+function neverType(): Type<never> {
+  return {
+    check(input: unknown): never {
+      throw new TypeCheckError("never", input);
+    },
+  };
+}
+
 function unknownType(): Type<unknown> {
   return {
     check(input: unknown): unknown {
@@ -309,7 +317,9 @@ function nativeEnumType<
 }
 
 export const t = {
+  never: neverType,
   unknown: unknownType,
+  any: unknownType,
   string: stringType,
   number: numberType,
   boolean: booleanType,
@@ -318,6 +328,7 @@ export const t = {
   function: functionType,
   null: nullType,
   undefined: undefinedType,
+  void: undefinedType,
   array: arrayType,
   tuple: tupleType,
   object: objectType,

@@ -5,6 +5,15 @@ test("unknown()", () => {
   expect(t.unknown().check(42)).toBe(42);
 });
 
+test("any()", () => {
+  expect(t.any().check(42)).toBe(42);
+});
+
+test("never()", () => {
+  // @ts-expect-error no check value
+  expect(() => t.never().check()).toThrow("expected 'never' got 'undefined'");
+});
+
 test("string()", () => {
   expect(t.string().check("42")).toBe("42");
   expect(() => t.string().check(42)).toThrow("expected 'string' got 'number'");
@@ -32,7 +41,7 @@ test("symbol()", () => {
   expect(() => t.symbol().check(42)).toThrow("expected 'symbol' got 'number'");
 });
 
-test("func()", () => {
+test("function()", () => {
   const f = (p: string) => p;
   expect(t.function().check(f)).toBe(f);
   expect(() => t.function().check(42)).toThrow(
@@ -40,7 +49,7 @@ test("func()", () => {
   );
 });
 
-test("nul()", () => {
+test("null()", () => {
   expect(t.null().check(null)).toBe(null);
   expect(() => t.null().check(0)).toThrow("expected 'null' got 'number'");
   expect(() => t.null().check(undefined)).toThrow(
@@ -48,7 +57,9 @@ test("nul()", () => {
   );
 });
 
-test("undef()", () => {
+test("undefined()", () => {
+  // @ts-expect-error no check value
+  expect(t.undefined().check()).toBe(undefined);
   expect(t.undefined().check(undefined)).toBe(undefined);
   expect(() => t.undefined().check(null)).toThrow(
     "expected 'undefined' got 'null'",
@@ -56,6 +67,14 @@ test("undef()", () => {
   expect(() => t.undefined().check(0)).toThrow(
     "expected 'undefined' got 'number'",
   );
+});
+
+test("void()", () => {
+  // @ts-expect-error no check value
+  expect(t.void().check()).toBe(undefined);
+  expect(t.void().check(undefined)).toBe(undefined);
+  expect(() => t.void().check(null)).toThrow("expected 'undefined' got 'null'");
+  expect(() => t.void().check(0)).toThrow("expected 'undefined' got 'number'");
 });
 
 test("boolean()", () => {
