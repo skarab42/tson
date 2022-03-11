@@ -1,5 +1,5 @@
 import { TypeParseError } from "./errors";
-import { ParseType } from "./types";
+import { ClassLike, ParseType } from "./types";
 
 export function typeOf(input: unknown): string {
   if (typeof input === "undefined") {
@@ -33,4 +33,15 @@ export function parse<TReturn>(type: ParseType, input: unknown): TReturn {
   }
 
   throw new TypeParseError(type, input);
+}
+
+export function instanceOf<TType extends ClassLike>(
+  type: TType,
+  input: unknown,
+): TType {
+  if (input instanceof type) {
+    return input as TType;
+  }
+
+  throw new TypeParseError(type.name, input);
 }

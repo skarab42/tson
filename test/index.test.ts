@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import { instanceOf } from "../src/util";
 import { t } from "../src";
 
 test("unknown()", () => {
@@ -380,5 +381,41 @@ test("unsignedNumber()", () => {
   );
   expect(() => t.unsignedNumber().parse(Infinity)).toThrow(
     "expected 'unsigned number' got 'Infinity'",
+  );
+});
+
+test("instanceOf()", () => {
+  class MyClass {}
+  const instance = new MyClass();
+  expect(instanceOf(MyClass, instance)).toBe(instance);
+  expect(() => instanceOf(MyClass, new Date())).toThrow(
+    "expected 'MyClass' got 'object'",
+  );
+});
+
+test("instanceof()", () => {
+  class MyClass {}
+  const instance = new MyClass();
+  expect(t.instanceof(MyClass).parse(instance)).toBe(instance);
+  expect(() => t.instanceof(MyClass).parse(new Date())).toThrow(
+    "expected 'MyClass' got 'object'",
+  );
+});
+
+test("date() Date", () => {
+  const date = new Date();
+  expect(t.date().parse(date)).toBe(date);
+  expect(() => t.date().parse(Date)).toThrow("expected 'Date' got 'function'");
+  expect(() => t.date().parse(Date.now())).toThrow(
+    "expected 'Date' got 'number'",
+  );
+});
+
+test("date() string", () => {
+  const date = "2022-03-11T09:28:00.575Z";
+  expect(t.date().parse(date)).toBe(date);
+  expect(() => t.date().parse("Date")).toThrow("expected 'Date' got 'string'");
+  expect(() => t.date().parse(Date.now())).toThrow(
+    "expected 'Date' got 'number'",
   );
 });

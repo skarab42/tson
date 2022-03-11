@@ -120,3 +120,5 @@ export type Literal =
 export type LiteralType<TReturn> = Type<TReturn> & {
   value: TReturn;
 };
+
+export type ClassLike = new (...args: unknown[]) => unknown;

@@ -96,6 +96,8 @@ type User = InferType<typeof user>;
   - [enum(object as const)](#enumobject-as-const)
   - [enum(enum)](#enumenum)
   - [nativeEnum(enum)](#nativeenumenum)
+  - [instanceof(type)](#instanceoftype)
+  - [date()](#date)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -311,6 +313,25 @@ enum MyEnum {
 }
 
 const myEnum = t.nativeEnum(MyEnum);
+```
+
+## instanceof(type)
+
+```ts
+class MyClass {}
+
+const instance = new MyClass();
+
+t.instanceof(MyClass).parse(instance); // passes
+t.instanceof(MyClass).parse("nyan"); // fail
+```
+
+## date()
+
+```ts
+t.date().parse(new Date()); // passes
+t.date().parse("2022-01-12T00:00:00.000Z"); // passes
+t.date().parse("not a string date"); // fail
 ```
 
 # Contributing 💜
