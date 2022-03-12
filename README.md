@@ -84,7 +84,7 @@ type User = InferType<typeof user>;
   - [tuple(...type)](#tupletype)
   - [tuple(type[])](#tupletype-1)
   - [tuple(type[] as const)](#tupletype-as-const)
-  - [object(object)](#objectobject)
+  - [object(schema)](#objectschema)
   - [union(...type)](#uniontype)
   - [union(type[])](#uniontype-1)
   - [union(type[] as const)](#uniontype-as-const)
@@ -103,6 +103,12 @@ type User = InferType<typeof user>;
   - [instanceof(type)](#instanceoftype)
   - [date()](#date)
   - [record(type)](#recordtype)
+  - [set(type)](#settype)
+  - [set(...type)](#settype-1)
+  - [set([type, ...type])](#settype-type)
+  - [map(keyType, valueType)](#mapkeytype-valuetype)
+  - [map(schema)](#mapschema)
+- [Contributing 💜](#contributing-)
 
 # API
 
@@ -187,7 +193,7 @@ const types = [t.string(), t.number(), t.string()] as const;
 const tpl = t.tuple(types); // [string, number, string]
 ```
 
-## object(object)
+## object(schema)
 
 ```ts
 const user = t.object({
@@ -382,10 +388,54 @@ t.date().parse("not a string date"); // fail
 
 ```ts
 t.record(t.string()); // { [x: string]: string }
-t.record(t.number()) // { [x: string]: number }
-t.record(t.date()) // { [x: string]:  Date }
+t.record(t.number()); // { [x: string]: number }
+t.record(t.date()); // { [x: string]:  Date }
+```
+
+## set(type)
+
+Testing a single type on the entire set
+
+```ts
+t.set(t.string()); // Set<string>
+```
+
+Testing a union of types on the entire set
+
+```ts
+t.set(t.union(t.string(), t.boolean(), t.string())); // Set<string|boolean>
+```
+
+## set(...type)
+
+Same as [tuple(...type)](#tupletype) but test if the input is an instance of Set.
+
+## set([type, ...type])
+
+Testing a tuple of types on the Set
+
+```ts
+t.set(t.string(), t.boolean(), t.string()); // Set<[string, boolean, string]>
+t.set([t.string(), t.boolean(), t.string()]); // Set<[string, boolean, string]>
+```
+
+## map(keyType, valueType)
+
+```ts
+t.map(t.string(), t.number()); // Map<string, number>
+t.map(t.date(), t.string()); // Map<Date, string>
+```
+
+## map(schema)
+
+Same as [object(schema)](#objectschema) but test if the input is an instance of Map.
+
+```ts
+const map = new map();
+
+t.map({ name: t.string(), size: t.string() }).parse(map);
+```
 
 # Contributing 💜
 
 See [CONTRIBUTING.md](https://github.com/skarab42/tson/blob/main/CONTRIBUTING.md)
-```

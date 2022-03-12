@@ -1,3 +1,4 @@
+import { MapErrorLocation } from "./types";
 import { typeOf } from "./util";
 
 export class LengthMismatchError extends TypeError {
@@ -41,5 +42,23 @@ export class ArrayTypeParseError extends TypeParseError {
   constructor(expected: string, input: unknown, path: string[]) {
     super(expected, input, path);
     this.message += ` at index '${path.join(".")}'`;
+  }
+}
+
+export class MapTypeParseError extends TypeParseError {
+  override name = "MapTypeParseError";
+  readonly location: MapErrorLocation;
+
+  constructor(
+    keyOrValue: MapErrorLocation,
+    expected: string,
+    input: unknown,
+    path: string[],
+  ) {
+    super(expected, input, path);
+    this.location = keyOrValue;
+    const type = typeOf(input);
+    const location = path.join(".");
+    this.message = `expected ${keyOrValue} to be '${expected}' got '${type}' from '${location}'`;
   }
 }

@@ -1,6 +1,7 @@
 import {
   ArrayTypeParseError,
   LengthMismatchError,
+  MapTypeParseError,
   ObjectTypeParseError,
   TypeParseError,
 } from "./errors";
@@ -16,6 +17,8 @@ import {
   InferType,
   Literal,
   LiteralType,
+  MapErrorLocation,
+  MapParser,
   ObjectType,
   Schema,
   Type,
@@ -130,6 +133,116 @@ function arrayType<TType extends Type<unknown>>(
       }
 
       return input as InferType<TType>[];
+    },
+  };
+}
+
+function setType<
+  TKey extends Type<unknown>,
+  TTypes extends readonly [TKey, ...TKey[]],
+  TReturn = Set<UnwrapTuple<Writable<TTypes>>>,
+>(types: TTypes): Type<TReturn>;
+
+function setType<
+  TTypes extends Type<unknown>[],
+  TReturn = Set<UnwrapTuple<TTypes>>,
+>(...types: TTypes): Type<TReturn>;
+
+function setType<
+  TTypesOrFirstType extends Type<unknown> | Type<unknown>[],
+  TNextTypes extends Type<unknown>[],
+>(typesOrFirstType: TTypesOrFirstType, ...nextTypes: TNextTypes) {
+  let schema: Type<unknown>;
+
+  if (Array.isArray(typesOrFirstType)) {
+    schema = tupleType(...typesOrFirstType, ...nextTypes);
+  } else if (nextTypes.length) {
+    schema = tupleType(typesOrFirstType, ...nextTypes);
+  } else {
+    schema = arrayType(typesOrFirstType);
+  }
+
+  parse<typeof schema>("object", schema);
+
+  return {
+    parse(input: unknown) {
+      if (input instanceof Set) {
+        schema.parse([...input]);
+
+        return input;
+      }
+
+      throw new TypeParseError("Set", input);
+    },
+  };
+}
+
+function parseMapAsObject(schema: Schema): MapParser {
+  return (map: Map<unknown, unknown>) => {
+    objectType(schema).parse(Object.fromEntries(map));
+
+    return map;
+  };
+}
+
+function parseMap(valueType: Type<unknown>, keyType: Type<unknown>): MapParser {
+  return (map: Map<unknown, unknown>) => {
+    let location: MapErrorLocation = "key";
+    let jsonKey = "?";
+
+    try {
+      map.forEach((value, key) => {
+        jsonKey = JSON.stringify(key);
+        location = "key";
+        keyType.parse(key);
+        location = "value";
+        valueType.parse(value);
+      });
+
+      return map;
+    } catch (error) {
+      if (error instanceof TypeParseError) {
+        throw new MapTypeParseError(location, error.expected, error.input, [
+          jsonKey,
+        ]);
+      }
+
+      throw error;
+    }
+  };
+}
+
+function mapType<TKey extends Type<unknown>, TValue extends Type<unknown>>(
+  keyType: TKey,
+  valueType: TValue,
+): Type<Map<InferType<TKey>, InferType<TValue>>>;
+
+function mapType<TSchema extends Schema>(
+  schema: TSchema,
+): Type<Map<unknown, unknown>>;
+
+function mapType<
+  TSchemaOrKeyType extends Schema | Type<unknown>,
+  TValue extends Type<unknown>,
+>(schemaOrKeyType: TSchemaOrKeyType, valueType?: TValue) {
+  let mapParser: MapParser;
+
+  if (typeof valueType === "undefined") {
+    mapParser = parseMapAsObject(parse<Schema>("object", schemaOrKeyType));
+  } else {
+    mapParser = parseMap(
+      parse<Type<unknown>>("object", schemaOrKeyType),
+      parse<Type<unknown>>("object", valueType),
+    );
+  }
+
+  return {
+    parse(input: unknown) {
+      if (input instanceof Map) {
+        return mapParser(input);
+      }
+
+      throw new TypeParseError("Map", input);
     },
   };
 }
@@ -542,6 +655,8 @@ export const t = {
   literal: literalType,
   array: arrayType,
   tuple: tupleType,
+  set: setType,
+  map: mapType,
   object: objectType,
   optional: optionalType,
   nullable: nullableType,

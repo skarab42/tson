@@ -122,3 +122,7 @@ export type LiteralType<TReturn> = Type<TReturn> & {
 };
 
 export type ClassLike = new (...args: unknown[]) => unknown;
+
+export type MapErrorLocation = "key" | "value";
+
+export type MapParser = (map: Map<unknown, unknown>) => void;

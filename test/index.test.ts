@@ -152,6 +152,88 @@ test("tuple() invalid input", () => {
   expect(() => schema.parse(["42"])).toThrow("type.parse is not a function");
 });
 
+test("set(type) number[]", () => {
+  const input = new Set([1, 2, 3, 4, 5]);
+  const schema = t.set(t.number());
+  expect(schema.parse(input)).toBe(input);
+  expect(schema.parse(new Set([1, 2, 3, 4])).size).toBe(4);
+  expect(schema.parse(new Set([1, 2, 3, 4, 5, 6])).size).toBe(6);
+  expect(() => schema.parse(new Set([1, 2, 3, true, 5]))).toThrow(
+    "expected 'number' got 'boolean' at index '3'",
+  );
+});
+
+test("set(...type) tuple", () => {
+  const input = new Set([42, "plop", true, "42"]);
+  const schema = t.set(t.number(), t.string(), t.boolean(), t.string());
+  expect(schema.parse(input)).toBe(input);
+  expect(() => schema.parse(new Set([42, 24, true, "42"]))).toThrow(
+    "expected 'string' got 'number' at index '1'",
+  );
+  expect(() =>
+    schema.parse(new Set([42, "plop", true, "42", "overflow"])),
+  ).toThrow("expected length to be '4' got '5'");
+  expect(() => schema.parse(new Set([42, "plop", true]))).toThrow(
+    "expected length to be '4' got '3'",
+  );
+});
+
+test("set([type, ...type]) tuple", () => {
+  const input = new Set([42, "plop", true, "42"]);
+  const schema = t.set([t.number(), t.string(), t.boolean(), t.string()]);
+  expect(schema.parse(input)).toBe(input);
+  expect(() => schema.parse(new Set([42, 24, true, "42"]))).toThrow(
+    "expected 'string' got 'number' at index '1'",
+  );
+  expect(() =>
+    schema.parse(new Set([42, "plop", true, "42", "overflow"])),
+  ).toThrow("expected length to be '4' got '5'");
+  expect(() => schema.parse(new Set([42, "plop", true]))).toThrow(
+    "expected length to be '4' got '3'",
+  );
+});
+
+test("set(): with invalid input", () => {
+  expect(() => t.set(t.number()).parse(42)).toThrow(
+    "expected 'Set' got 'number'",
+  );
+});
+
+test("map(keyType, valueType)", () => {
+  const map = new Map();
+  map.set("name", "nyan");
+  map.set("size", "42");
+  const schema = t.map(t.string(), t.string());
+  expect(schema.parse(map)).toBe(map);
+  map.set("life", 42);
+  expect(() => schema.parse(map)).toThrow(
+    "expected value to be 'string' got 'number' from '\"life\"'",
+  );
+});
+
+test("map(schema)", () => {
+  const map = new Map();
+  map.set("name", "nyan");
+  map.set("size", "42");
+  const schema = t.map({ name: t.string(), size: t.string() });
+  expect(schema.parse(map)).toBe(map);
+  map.set("size", 42);
+  expect(() => schema.parse(map)).toThrow(
+    "expected 'string' got 'number' from 'size'",
+  );
+});
+
+test("map(): with invalid input", () => {
+  // @ts-expect-error input type not assignable
+  expect(() => t.map(null)).toThrow("expected 'object' got 'null'");
+  // @ts-expect-error input type not assignable
+  expect(() => t.map({}, {}).parse(42)).toThrow("expected 'Map' got 'number'");
+  // @ts-expect-error input type not assignable
+  expect(() => t.map({}, {}).parse(new Map([["life", "42"]]))).toThrow(
+    "keyType.parse is not a function",
+  );
+});
+
 test("object()", () => {
   const input = { life: 42, name: "prout" };
   const schema = { life: t.number(), name: t.string() };
