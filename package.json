@@ -45,7 +45,7 @@
     "lint": "eslint --ext \".js,.ts\" --max-warnings=0 --ignore-path .gitignore .",
     "lint-fix": "pnpm lint --fix",
     "unused-exports": "pnpm ts-unused-exports tsconfig.json",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release --branches main"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
