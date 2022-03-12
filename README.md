@@ -1,6 +1,6 @@
 # tson
 
-**Type Safe Object Notation & Validation**
+**Type Safe Object Notation & Validation** [![test](https://github.com/skarab42/tson/actions/workflows/test.yml/badge.svg)](https://github.com/skarab42/tson/actions/workflows/test.yml)
 
 📌 Work in Progress, not ready for production...
 
