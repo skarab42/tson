@@ -108,6 +108,7 @@ type User = InferType<typeof user>;
   - [set([type, ...type])](#settype-type)
   - [map(keyType, valueType)](#mapkeytype-valuetype)
   - [map(schema)](#mapschema)
+  - [promise(type)](#promisetype)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -434,6 +435,16 @@ Same as [object(schema)](#objectschema) but test if the input is an instance of 
 const map = new map();
 
 t.map({ name: t.string(), size: t.string() }).parse(map);
+```
+
+## promise(type)
+
+```ts
+const promise = t.promise(t.number());
+
+await promise.parse(Promise.resolve(42)); // resolve: 42
+await promise.parse(Promise.resolve("42")); // reject: expected 'number' got 'string'
+await promise.parse(42); // reject: expected 'Promise' got 'number'
 ```
 
 # Contributing 💜

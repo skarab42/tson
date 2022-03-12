@@ -28,6 +28,7 @@ import { numberType } from "./type/number";
 import { stringType } from "./type/string";
 import { unknownType } from "./type/unknown";
 import { neverType } from "./type/never";
+import { promiseType } from "./type/promise";
 
 export const t = {
   never: neverType,
@@ -66,4 +67,5 @@ export const t = {
   instanceof: instanceofType,
   date: dateType,
   record: recordType,
+  promise: promiseType,
 };
