@@ -12,9 +12,9 @@
 
 ## Why?
 
-After my contribution to the [tRPC](https://github.com/trpc/trpc) project, I wanted to understand more deeply the use of generics and inference with TypeScript.
-I needed a challenge, so I set myself the goal of coding my own schema validation library.
-Very inspired by [Zod](https://github.com/colinhacks/zod) (_I try to have the same API_) but not wanting to copy it, I added a constraint: Don't use classes.
+After a contribution to the [tRPC](https://github.com/trpc/trpc) project, I wanted to understand more deeply the use of generics and inference in TypeScript.
+I needed a challenge so I set myself the goal of coding my own schema validation library.
+This library is heavily inspired by [Zod](https://github.com/colinhacks/zod) (_I try to provide the same API_) but in order to avoid cloning it, I challenged myself to not use any classes.
 
 # Install
 
@@ -440,7 +440,7 @@ t.map(t.date(), t.string()); // Map<Date, string>
 Same as [object(schema)](#objectschema) but test if the input is an instance of Map.
 
 ```ts
-const map = new map();
+const map = new Map();
 
 t.map({ name: t.string(), size: t.string() }).parse(map);
 ```
