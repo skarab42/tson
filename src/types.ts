@@ -36,7 +36,11 @@ export type InferSchema<TSchema extends Schema> = {
 
 export type InferTuple<TTypes extends unknown[]> = InferType<TTypes[number]>;
 
-export type UnwrapTuple<TType extends Type<unknown>[]> = {
+export type TypeCollection =
+  | Type<unknown>[]
+  | readonly [Type<unknown>, ...Type<unknown>[]];
+
+export type UnwrapTuple<TType extends TypeCollection> = {
   [Key in keyof TType]: InferType<TType[Key]>;
 };
 
@@ -126,3 +130,5 @@ export type ClassLike = new (...args: unknown[]) => unknown;
 export type MapErrorLocation = "key" | "value";
 
 export type MapParser = (map: Map<unknown, unknown>) => void;
+
+export type AnyFunction = (...args: unknown[]) => void;

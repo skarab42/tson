@@ -10,6 +10,12 @@
 - 🔷 Immutable
 - ✅ Well tested
 
+## Why?
+
+After my contribution to the [tRPC](https://github.com/trpc/trpc) project, I wanted to understand more deeply the use of generics and inference with TypeScript.
+I needed a challenge, so I set myself the goal of coding my own schema validation library.
+Very inspired by [Zod](https://github.com/colinhacks/zod) (_I try to have the same API_) but not wanting to copy it, I added a constraint: Don't use classes.
+
 # Install
 
 ```bash
@@ -58,6 +64,7 @@ type User = InferType<typeof user>;
 
 - [tson](#tson)
   - [Features](#features)
+  - [Why?](#why)
 - [Install](#install)
   - [ES and CommonJS module](#es-and-commonjs-module)
 - [Examples](#examples)
@@ -71,7 +78,6 @@ type User = InferType<typeof user>;
   - [null()](#null)
   - [unknown()](#unknown)
   - [undefined()](#undefined)
-  - [function()](#function)
   - [literal(value)](#literalvalue)
   - [nan()](#nan)
   - [infinity()](#infinity)
@@ -109,6 +115,10 @@ type User = InferType<typeof user>;
   - [map(keyType, valueType)](#mapkeytype-valuetype)
   - [map(schema)](#mapschema)
   - [promise(type)](#promisetype)
+  - [function()](#function)
+  - [function(args)](#functionargs)
+  - [function(args, returns)](#functionargs-returns)
+  - [function(args, returns, implement)](#functionargs-returns-implement)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -128,8 +138,6 @@ type User = InferType<typeof user>;
 ## unknown()
 
 ## undefined()
-
-## function()
 
 ## literal(value)
 
@@ -445,6 +453,45 @@ const promise = t.promise(t.number());
 await promise.parse(Promise.resolve(42)); // resolve: 42
 await promise.parse(Promise.resolve("42")); // reject: expected 'number' got 'string'
 await promise.parse(42); // reject: expected 'Promise' got 'number'
+```
+
+## function()
+
+```ts
+const func = t.function();
+
+type Func = InferType<typeof func>; // () => void
+```
+
+## function(args)
+
+```ts
+const func = t.function([t.string(), t.number()]);
+
+type Func = InferType<typeof func>; // (arg_0: string, arg_1: number) => void
+```
+
+## function(args, returns)
+
+```ts
+const func = t.function([t.string()], t.boolean());
+
+type Func = InferType<typeof func>; // (arg_0: string) => boolean
+```
+
+## function(args, returns, implement)
+
+```ts
+const args = [t.string(), t.boolean()] as const;
+
+const returns = t.union(t.string(), t.number());
+
+const func = t.function(args, returns, (input, toInt) => {
+  // input type is string and toInt type is boolean
+  return toInt ? parseInt(input) : input.toUpperCase();
+});
+
+type Func = InferType<typeof func>; // (arg_0: string, arg_1: boolean) => string | number
 ```
 
 # Contributing 💜
