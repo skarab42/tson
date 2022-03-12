@@ -19,7 +19,7 @@ This library is heavily inspired by [Zod](https://github.com/colinhacks/zod) (_I
 # Install
 
 ```bash
-pnpm add @skarab42/tson
+pnpm add @skarab/tson
 ```
 
 _`yarn` and `npm` also works_

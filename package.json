@@ -1,5 +1,5 @@
 {
-  "name": "@skarab42/tson",
+  "name": "@skarab/tson",
   "version": "0.0.0-development",
   "description": "Type Safe Object Notation & Validation",
   "author": {
