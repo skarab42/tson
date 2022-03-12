@@ -1,11 +1,18 @@
 {
   "name": "@skarab42/tson",
-  "version": "0.1.0",
-  "description": "...",
+  "version": "0.0.0-development",
+  "description": "Type Safe Object Notation & Validation",
   "author": {
     "name": "skarab42",
     "email": "contact@skarab42.dev"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skarab42/tson.git"
+  },
+  "homepage": "https://github.com/skarab42/tson",
+  "bugs": "https://github.com/skarab42/tson/issues",
+  "funding": "https://github.com/sponsors/skarab42",
   "license": "MIT",
   "type": "module",
   "main": "./build/cjs/index.js",
@@ -37,7 +44,8 @@
     "format": "prettier --write ./**/*{.js,.ts,.json,.md} --ignore-path .gitignore",
     "lint": "eslint --ext \".js,.ts\" --max-warnings=0 --ignore-path .gitignore .",
     "lint-fix": "pnpm lint --fix",
-    "unused-exports": "pnpm ts-unused-exports tsconfig.json"
+    "unused-exports": "pnpm ts-unused-exports tsconfig.json",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
@@ -53,9 +61,17 @@
     "simple-git-hooks": "^2.7.0",
     "ts-unused-exports": "^8.0.0",
     "typescript": "^4.6.2",
-    "vitest": "^0.5.5"
+    "vitest": "^0.5.5",
+    "semantic-release": "^19.0.2"
   },
   "peerDependencies": {
     "typescript": "^4.6.2"
-  }
+  },
+  "keywords": [
+    "typescript",
+    "schema",
+    "validation",
+    "type",
+    "inference"
+  ]
 }
