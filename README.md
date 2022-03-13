@@ -120,6 +120,8 @@ type User = t.infer<typeof user>;
   - [function(args, returns)](#functionargs-returns)
   - [function(args, returns, implement)](#functionargs-returns-implement)
   - [preprocess(filter, type)](#preprocessfilter-type)
+  - [postprocess(filter, type)](#postprocessfilter-type)
+  - [postprocess(filter, inputType, outputType)](#postprocessfilter-inputtype-outputtype)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -504,6 +506,32 @@ const toString = t.preprocess((input) => String(input), t.string());
 
 toString.parse("42"); // => "42"
 toString.parse(42); // => "42"
+```
+
+## postprocess(filter, type)
+
+If you want to modify the output after it is parsed you can use the `postprocess` type as follows.
+
+```ts
+const postprocess = t.postprocess((input) => input + 2, t.number());
+
+postprocess.parse(40); // => 42
+postprocess.parse("42"); // throws: "expected 'number' got 'string'"
+```
+
+## postprocess(filter, inputType, outputType)
+
+If you want to modify the output after it is parsed you can use the `postprocess` type as follows.
+
+```ts
+const postprocess = t.postprocess(
+  (input) => String(input),
+  t.number(),
+  t.string(),
+);
+
+postprocess.parse(40); // => "42"
+postprocess.parse("42"); // => throws: "expected 'number' got 'string'"
 ```
 
 # Contributing 💜
