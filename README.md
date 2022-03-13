@@ -116,6 +116,8 @@ type User = t.infer<typeof user>;
 - [Type helpers](#type-helpers)
   - [safeParse(input)](#safeparseinput)
   - [optional](#optional)
+  - [preprocess](#preprocess)
+  - [postprocess](#postprocess)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -561,6 +563,26 @@ t.bigint().optional(); // => bigint | undefined
 
 // same as
 t.optional(t.bigint());
+```
+
+## preprocess
+
+```ts
+t.string().preprocess((input) => String(input));
+
+// same as
+t.preprocess((input) => String(input), t.string());
+```
+
+## postprocess
+
+Alias: `.transform()`
+
+```ts
+t.number().postprocess((input) => input + 2);
+
+// same as
+t.postprocess((input) => input + 2, t.number());
 ```
 
 # Contributing 💜
