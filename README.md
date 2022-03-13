@@ -56,7 +56,7 @@ const user = t.object({
 
 user.parse({ name: "nyan", age: 42, admin: true });
 
-type User = InferType<typeof user>;
+type User = t.infer<typeof user>;
 // { name: string, age: number, admin: boolean }
 ```
 
@@ -211,7 +211,7 @@ const user = t.object({
   admin: t.boolean(),
 });
 
-type User = InferType<typeof user>;
+type User = t.infer<typeof user>;
 // { name: string, age: number, admin: boolean }
 ```
 
@@ -293,7 +293,7 @@ myEnum.parse("PLOP"); // error: expected '0|1|2|3|UP|DOWN|LEFT|RIGHT' got 'strin
 ### Infer enum type
 
 ```ts
-type MyEnum = InferType<typeof myEnum>; // => "UP" | "DOWN" | "LEFT" | "RIGHT"
+type MyEnum = t.infer<typeof myEnum>; // => "UP" | "DOWN" | "LEFT" | "RIGHT"
 
 function move(direction: MyEnum) {
   // direction === "DOWN"
@@ -460,7 +460,7 @@ await promise.parse(42); // reject: expected 'Promise' got 'number'
 ```ts
 const func = t.function();
 
-type Func = InferType<typeof func>; // () => void
+type Func = t.infer<typeof func>; // () => void
 ```
 
 ## function(args)
@@ -468,7 +468,7 @@ type Func = InferType<typeof func>; // () => void
 ```ts
 const func = t.function([t.string(), t.number()]);
 
-type Func = InferType<typeof func>; // (arg_0: string, arg_1: number) => void
+type Func = t.infer<typeof func>; // (arg_0: string, arg_1: number) => void
 ```
 
 ## function(args, returns)
@@ -476,7 +476,7 @@ type Func = InferType<typeof func>; // (arg_0: string, arg_1: number) => void
 ```ts
 const func = t.function([t.string()], t.boolean());
 
-type Func = InferType<typeof func>; // (arg_0: string) => boolean
+type Func = t.infer<typeof func>; // (arg_0: string) => boolean
 ```
 
 ## function(args, returns, implement)
@@ -491,7 +491,7 @@ const func = t.function(args, returns, (input, toInt) => {
   return toInt ? parseInt(input) : input.toUpperCase();
 });
 
-type Func = InferType<typeof func>; // (arg_0: string, arg_1: boolean) => string | number
+type Func = t.infer<typeof func>; // (arg_0: string, arg_1: boolean) => string | number
 ```
 
 # Contributing 💜
