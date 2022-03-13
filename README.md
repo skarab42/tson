@@ -119,6 +119,7 @@ type User = t.infer<typeof user>;
   - [function(args)](#functionargs)
   - [function(args, returns)](#functionargs-returns)
   - [function(args, returns, implement)](#functionargs-returns-implement)
+  - [preprocess(filter, type)](#preprocessfilter-type)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -492,6 +493,17 @@ const func = t.function(args, returns, (input, toInt) => {
 });
 
 type Func = t.infer<typeof func>; // (arg_0: string, arg_1: boolean) => string | number
+```
+
+## preprocess(filter, type)
+
+If you want to modify the input before it is parsed you can use the `preprocess` type as follows.
+
+```ts
+const toString = t.preprocess((input) => String(input), t.string());
+
+toString.parse("42"); // => "42"
+toString.parse(42); // => "42"
 ```
 
 # Contributing 💜

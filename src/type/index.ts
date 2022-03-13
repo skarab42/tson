@@ -18,6 +18,7 @@ export { nullableType as nullable } from "./nullable";
 export { numberType as number } from "./number";
 export { objectType as object } from "./object";
 export { optionalType as optional } from "./optional";
+export { preprocessType as preprocess } from "./preprocess";
 export { promiseType as promise } from "./promise";
 export { recordType as record } from "./record";
 export { setType as set } from "./set";
