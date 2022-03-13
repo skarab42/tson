@@ -3,6 +3,7 @@ import { TypeParseError } from "../errors";
 import { parse } from "../util";
 import { tupleType } from "./tuple";
 import { arrayType } from "./array";
+import { helpers } from "../helpers";
 
 export function setType<
   TType extends Type<InferType<TType>>,
@@ -37,6 +38,7 @@ export function setType<
   parse<typeof schema>("object", schema);
 
   return {
+    ...helpers(),
     parse(input: unknown) {
       if (input instanceof Set) {
         schema.parse([...input]);

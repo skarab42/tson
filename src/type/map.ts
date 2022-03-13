@@ -1,5 +1,6 @@
 import { InferType, MapErrorLocation, MapParser, Schema, Type } from "../types";
 import { MapTypeParseError, TypeParseError } from "../errors";
+import { helpers } from "../helpers";
 import { parse } from "../util";
 import { objectType } from "./object";
 
@@ -62,6 +63,7 @@ export function mapType<
   }
 
   return {
+    ...helpers(),
     parse(input: unknown) {
       if (input instanceof Map) {
         return mapParser(input);

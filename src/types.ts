@@ -1,3 +1,5 @@
+import { TypeParseError } from "./errors";
+
 export type ParseType =
   | "unknown"
   | "string"
@@ -14,7 +16,31 @@ export type ParseType =
   | "NaN"
   | "Infinity";
 
-export type Type<TReturn> = { parse(input: unknown): TReturn };
+export type SafeParseSuccess<TReturn> = {
+  success: true;
+  data: TReturn;
+};
+
+export type SafeParseError = {
+  success: false;
+  error: TypeParseError;
+};
+
+export type SafeParseReturns<TReturn> =
+  | SafeParseSuccess<TReturn>
+  | SafeParseError;
+
+export type TypeHelpers<TReturn> = {
+  safeParse(input: unknown): SafeParseReturns<TReturn>;
+  optional(): Type<TReturn | undefined>;
+};
+
+export type TypeBase<TReturn> = {
+  parse(input: unknown): TReturn;
+};
+
+export type Type<TReturn> = TypeBase<TReturn> & TypeHelpers<TReturn>;
+
 export type Schema = Record<string, Type<unknown>>;
 export type ObjectType<TReturn> = Type<TReturn> & {
   schema: Schema;
@@ -24,7 +50,7 @@ export type Unwrap<TInput> = TInput extends Record<string, unknown>
   ? { [Key in keyof TInput]: TInput[Key] }
   : TInput;
 
-export type InferType<TType> = TType extends Type<infer TReturn>
+export type InferType<TType> = TType extends TypeBase<infer TReturn>
   ? TReturn
   : TType;
 
@@ -40,6 +66,8 @@ export type InferTuple<TTypes extends unknown[]> = InferType<TTypes[number]>;
 
 export type TypeCollection =
   | Type<unknown>[]
+  | TypeBase<unknown>[]
+  | readonly [TypeBase<unknown>, ...TypeBase<unknown>[]]
   | readonly [Type<unknown>, ...Type<unknown>[]];
 
 export type UnwrapTuple<TType extends TypeCollection> = {
@@ -83,7 +111,7 @@ export type EnumType<TType, TValues, TUnion> = {
   enum: TType;
   options: TValues;
   parse(input: unknown): TUnion;
-};
+} & TypeHelpers<TUnion>;
 
 export type StringEnumRecord<TValues extends EnumValues> = {
   [Key in keyof TValues]: TValues[Key] extends string

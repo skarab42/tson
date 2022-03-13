@@ -70,22 +70,13 @@ type User = t.infer<typeof user>;
 - [Examples](#examples)
 - [Table of contents](#table-of-contents)
 - [API](#api)
-  - [string()](#string)
-  - [number()](#number)
-  - [bigint()](#bigint)
-  - [boolean()](#boolean)
-  - [symbol()](#symbol)
-  - [null()](#null)
-  - [unknown()](#unknown)
-  - [undefined()](#undefined)
+  - [First level types](#first-level-types)
+    - [Primitive types](#primitive-types)
+    - [Numbers types](#numbers-types)
+    - [Empty types](#empty-types)
+    - [Catch-all types](#catch-all-types)
+    - [Never type](#never-type)
   - [literal(value)](#literalvalue)
-  - [nan()](#nan)
-  - [infinity()](#infinity)
-  - [finite()](#finite)
-  - [integer()](#integer)
-  - [unsignedInteger()](#unsignedinteger)
-  - [unsignedNumber()](#unsignednumber)
-  - [literal(value)](#literalvalue-1)
   - [array(type)](#arraytype)
   - [tuple(...type)](#tupletype)
   - [tuple(type[])](#tupletype-1)
@@ -122,45 +113,57 @@ type User = t.infer<typeof user>;
   - [preprocess(filter, type)](#preprocessfilter-type)
   - [postprocess(filter, type)](#postprocessfilter-type)
   - [postprocess(filter, inputType, outputType)](#postprocessfilter-inputtype-outputtype)
+- [Type helpers](#type-helpers)
+  - [safeParse(input)](#safeparseinput)
+  - [optional](#optional)
 - [Contributing 💜](#contributing-)
 
 # API
 
-## string()
+## First level types
 
-## number()
+### Primitive types
 
-## bigint()
+```ts
+t.string();
+t.number();
+t.bigint();
+t.boolean();
+t.symbol();
+t.date();
+```
 
-## boolean()
+### Numbers types
 
-## symbol()
+```ts
+t.nan();
+t.finite();
+t.infinity();
+t.integer(); // Alias: int()
+t.unsignedNumber(); // Alias: unumber()
+t.unsignedInteger(); // Alias: uinteger(), uint()
+```
 
-## null()
+### Empty types
 
-## unknown()
+```ts
+t.undefined();
+t.null();
+t.void();
+```
 
-## undefined()
+### Catch-all types
 
-## literal(value)
+```ts
+t.any();
+t.unknown();
+```
 
-## nan()
+### Never type
 
-## infinity()
-
-## finite()
-
-## integer()
-
-Alias: `int()`
-
-## unsignedInteger()
-
-Alias: `uinteger()`, `uint()`
-
-## unsignedNumber()
-
-Alias: `unumber()`
+```ts
+t.never();
+```
 
 ## literal(value)
 
@@ -532,6 +535,32 @@ const postprocess = t.postprocess(
 
 postprocess.parse(40); // => "42"
 postprocess.parse("42"); // => throws: "expected 'number' got 'string'"
+```
+
+# Type helpers
+
+## safeParse(input)
+
+If you want to avoid the parse method throws an error you can use the `.safeParse()` method instead.
+
+```ts
+t.bigint().safeParse(42n);
+// => { success: true, data: 42n }
+
+t.bigint().safeParse(42);
+// => {
+//   "error": [TypeParseError: expected 'bigint|undefined' got 'number'],
+//   "success": false,
+// }
+```
+
+## optional
+
+```ts
+t.bigint().optional(); // => bigint | undefined
+
+// same as
+t.optional(t.bigint());
 ```
 
 # Contributing 💜

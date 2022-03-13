@@ -1,9 +1,11 @@
 import { TypeParseError } from "../errors";
-import { Type } from "../types";
 import { instanceOf } from "../util";
+import { helpers } from "../helpers";
+import { Type } from "../types";
 
 export function dateType(): Type<DateConstructor | string> {
   return {
+    ...helpers(),
     parse(input: unknown): DateConstructor | string {
       if (typeof input === "string") {
         const maybeDate = new Date(input);

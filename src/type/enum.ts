@@ -11,6 +11,7 @@ import {
 import { stringType } from "./string";
 import { numberType } from "./number";
 import { unionType } from "./union";
+import { helpers } from "../helpers";
 
 export function enumType<
   TKey extends string,
@@ -71,6 +72,7 @@ export function enumType<
   const schema = unionType([stringType(), numberType()]);
 
   return {
+    ...helpers(),
     enum: Object.freeze(enumObj),
     options: Object.freeze(values),
     parse(input: unknown) {

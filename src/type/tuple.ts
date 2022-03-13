@@ -3,6 +3,7 @@ import {
   LengthMismatchError,
   TypeParseError,
 } from "../errors";
+import { helpers } from "../helpers";
 import { Type, UnwrapTuple, Writable } from "../types";
 import { parse } from "../util";
 
@@ -10,9 +11,11 @@ export function tupleType<
   TKey extends Type<unknown>,
   TTypes extends readonly [TKey, ...TKey[]],
 >(types: TTypes): Type<UnwrapTuple<Writable<TTypes>>>;
+
 export function tupleType<TTypes extends Type<unknown>[]>(
   ...types: TTypes
 ): Type<UnwrapTuple<TTypes>>;
+
 export function tupleType<
   TTypesOrFirstType extends Type<unknown> | Type<unknown>[],
   TNextTypes extends Type<unknown>[],
@@ -26,6 +29,7 @@ export function tupleType<
   }
 
   return {
+    ...helpers<unknown[]>(),
     parse(input: unknown[]) {
       parse<typeof types>("array", input);
 

@@ -1,5 +1,6 @@
 import { ObjectTypeParseError, TypeParseError } from "../errors";
 import { ObjectType, Schema, UnwrapSchema } from "../types";
+import { helpers } from "../helpers";
 import { parse } from "../util";
 
 export function objectType<TInputSchema extends Schema>(
@@ -7,6 +8,7 @@ export function objectType<TInputSchema extends Schema>(
 ): ObjectType<UnwrapSchema<TInputSchema>> {
   return {
     schema,
+    ...helpers(),
     parse(input: unknown): UnwrapSchema<TInputSchema> {
       let lastParsedKey = "?";
 

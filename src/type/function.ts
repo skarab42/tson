@@ -1,17 +1,17 @@
-import { UnwrapTuple, Type, InferType, AnyFunction } from "../types";
-import { tupleType } from "./tuple";
+import { UnwrapTuple, TypeBase, InferType, AnyFunction, Type } from "../types";
 import { undefinedType } from "./undefined";
+import { tupleType } from "./tuple";
 
 export function functionType<
-  TKey extends Type<unknown>,
-  TReturns extends Type<void>,
+  TKey extends TypeBase<unknown>,
+  TReturns extends TypeBase<void>,
   TArgs extends readonly [TKey, ...TKey[]],
   TFunc = (...args: UnwrapTuple<TArgs>) => InferType<TReturns>,
 >(args: TArgs, returns?: TReturns): TFunc;
 
 export function functionType<
-  TKey extends Type<unknown>,
-  TReturns extends Type<void>,
+  TKey extends TypeBase<unknown>,
+  TReturns extends TypeBase<void>,
   TArgs extends readonly [TKey, ...TKey[]],
   TFunc = (...args: UnwrapTuple<TArgs>) => InferType<TReturns>,
 >(

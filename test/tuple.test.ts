@@ -65,3 +65,28 @@ test("tuple() invalid input", () => {
   const schema = t.tuple(true);
   expect(() => schema.parse(["42"])).toThrow("type.parse is not a function");
 });
+
+test("tuple() safe parse", () => {
+  const input: [number, string, boolean, string] = [42, "plop", true, "42"];
+  const prout = [t.number(), t.string(), t.boolean(), t.string()] as const;
+  const schema = t.tuple(prout);
+
+  expect(schema.safeParse(input)).toMatchInlineSnapshot(`
+    {
+      "data": [
+        42,
+        "plop",
+        true,
+        "42",
+      ],
+      "success": true,
+    }
+  `);
+
+  expect(schema.safeParse(42)).toMatchInlineSnapshot(`
+    {
+      "error": [TypeParseError: expected 'array' got 'number'],
+      "success": false,
+    }
+  `);
+});

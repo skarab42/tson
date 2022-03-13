@@ -1,11 +1,13 @@
 import { ArrayTypeParseError, TypeParseError } from "../errors";
 import { InferType, Type } from "../types";
+import { helpers } from "../helpers";
 import { parse } from "../util";
 
 export function arrayType<TType extends Type<unknown>>(
   type: TType,
 ): Type<InferType<TType>[]> {
   return {
+    ...helpers(),
     parse(input: unknown[]): InferType<TType>[] {
       parse<InferType<TType>[]>("array", input);
 

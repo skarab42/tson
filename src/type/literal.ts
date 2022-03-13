@@ -1,5 +1,6 @@
 import { TypeParseError } from "../errors";
 import { Literal, LiteralType } from "../types";
+import { helpers } from "../helpers";
 import { typeOf } from "../util";
 import { stringType } from "./string";
 import { numberType } from "./number";
@@ -27,6 +28,7 @@ export function literalType<TType extends Literal>(
 
   return {
     value,
+    ...helpers(),
     parse(input: unknown): TType {
       schema.parse(input);
 

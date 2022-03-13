@@ -1,5 +1,6 @@
-import { TypeParseError } from "../errors";
 import { InferTuple, Type, Writable } from "../types";
+import { TypeParseError } from "../errors";
+import { helpers } from "../helpers";
 
 export function unionType<
   TKey extends Type<unknown>,
@@ -23,6 +24,7 @@ export function unionType<
   }
 
   return {
+    ...helpers(),
     parse(input: unknown) {
       const expectTypes: Set<string> = new Set();
       let errorCount = 0;

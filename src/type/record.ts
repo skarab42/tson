@@ -1,6 +1,7 @@
 import { InferType, Schema, Type } from "../types";
-import { parse } from "../util";
 import { objectType } from "./object";
+import { helpers } from "../helpers";
+import { parse } from "../util";
 
 export function recordType<
   TType extends Type<unknown>,
@@ -9,6 +10,7 @@ export function recordType<
   parse<object>("object", type);
 
   return {
+    ...helpers(),
     parse(input: unknown) {
       const schema: Schema = {};
       const inputObj = parse<TReturn>("object", input);
