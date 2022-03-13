@@ -1,6 +1,53 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("function() infer", () => {
+  const type = t.function();
+  type Type = t.infer<typeof type>;
+
+  const assertType: t.AssertEqual<Type, () => void> = true;
+  assertType;
+});
+
+test("function([type]) infer", () => {
+  const type = t.function([t.string()]);
+  type Type = t.infer<typeof type>;
+
+  const assertType: t.AssertEqual<Type, (x: string) => void> = true;
+  assertType;
+});
+
+test("function([type], return) infer", () => {
+  const type = t.function([t.number()], t.boolean());
+  type Type = t.infer<typeof type>;
+
+  const assertType: t.AssertEqual<Type, (x: number) => boolean> = true;
+  assertType;
+});
+
+test("function([type], return, implement) infer", () => {
+  const args = [t.string(), t.boolean()] as const;
+  const returns = t.union(t.string(), t.number());
+
+  const type = t.function(args, returns, (input, toInt) => {
+    const assertArg1: t.AssertEqual<typeof input, string> = true;
+    assertArg1;
+
+    const assertArg2: t.AssertEqual<typeof toInt, boolean> = true;
+    assertArg2;
+
+    return toInt ? parseInt(input) : input.toUpperCase();
+  });
+
+  type Type = t.infer<typeof type>;
+
+  const assertType: t.AssertEqual<
+    Type,
+    (a: string, b: boolean) => string | number
+  > = true;
+  assertType;
+});
+
 test("function() void", () => {
   expect(t.function()()).toBe(undefined);
 });

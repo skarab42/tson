@@ -1,6 +1,23 @@
 import { expect, test } from "vitest";
-import { instanceOf } from "../src/util";
-import { t } from "../src";
+import { instanceOf, t } from "../src";
+
+test("instanceOf() infer", () => {
+  class MyClass {}
+  const instance = new MyClass();
+  const type = instanceOf(MyClass, instance);
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, typeof MyClass> = true;
+  assertType;
+});
+
+test("instanceof() infer", () => {
+  class MyClass {}
+  const instance = new MyClass();
+  const type = t.instanceof(MyClass).parse(instance);
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, typeof MyClass> = true;
+  assertType;
+});
 
 test("instanceOf() helper", () => {
   class MyClass {}

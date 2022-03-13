@@ -1,6 +1,43 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("postprocess() infer", () => {
+  const type = t.postprocess((input) => {
+    const assertArg: t.AssertEqual<typeof input, number> = true;
+    assertArg;
+
+    return input + 2;
+  }, t.number());
+
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, number> = true;
+  assertType;
+
+  const value = type.parse(42);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
+test("postprocess() infer output convertion", () => {
+  const type = t.postprocess(
+    (input) => {
+      const assertArg: t.AssertEqual<typeof input, number> = true;
+      assertArg;
+      return String(input);
+    },
+    t.number(),
+    t.string(),
+  );
+
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, string> = true;
+  assertType;
+
+  const value = type.parse(42);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("postprocess() number -> number", () => {
   const postprocess = t.postprocess((input) => input + 2, t.number());
 

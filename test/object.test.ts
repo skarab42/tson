@@ -1,6 +1,23 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("object() infer", () => {
+  const input = { life: 42, name: "prout", data: { size: 24, verbose: true } };
+  const type = t.object({
+    life: t.number(),
+    name: t.string(),
+    data: t.object({ size: t.number(), verbose: t.boolean() }),
+  });
+
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, typeof input> = true;
+  assertType;
+
+  const value = type.parse(input);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("object()", () => {
   const input = { life: 42, name: "prout" };
   const schema = { life: t.number(), name: t.string() };

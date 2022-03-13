@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("array() infer", () => {
+  const type = t.array(t.number());
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, number[]> = true;
+  assertType;
+
+  const value = type.parse([0, 1, 2]);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("array()", () => {
   const input = [1, 2, 3, 4, 5];
   const schema = t.array(t.number());

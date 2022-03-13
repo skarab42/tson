@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("date() infer", () => {
+  const type = t.date();
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, string | DateConstructor> = true;
+  assertType;
+
+  const value = type.parse(new Date());
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("date() Date", () => {
   const date = new Date();
   expect(t.date().parse(date)).toBe(date);

@@ -1,6 +1,32 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+// TODO: FIX: type should be Set<number>
+// test("set() infer", () => {
+//   const type = t.set(t.number());
+//   type Type = t.infer<typeof type>;
+//   const assertType: t.AssertEqual<Type, Set<number>> = true;
+//   assertType;
+
+//   const value = type.parse(new Set([1, 2, 3, 4, 5]));
+//   const assertValue: t.AssertEqual<typeof value, Type> = true;
+//   assertValue;
+// });
+
+test("set() infer tuple", () => {
+  const type = t.set(t.number(), t.string(), t.boolean(), t.string());
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<
+    Type,
+    Set<[number, string, boolean, string]>
+  > = true;
+  assertType;
+
+  const value = type.parse(new Set([42, "plop", true, "42"]));
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("set(type) number[]", () => {
   const input = new Set([1, 2, 3, 4, 5]);
   const schema = t.set(t.number());

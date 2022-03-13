@@ -1,6 +1,19 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("tuple() infer", () => {
+  type Input = [number, string, boolean, string];
+
+  const type = t.tuple(t.number(), t.string(), t.boolean(), t.string());
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, Input> = true;
+  assertType;
+
+  const value = type.parse([42, "plop", true, "42"]);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("tuple(...type)", () => {
   const input: [number, string, boolean, string] = [42, "plop", true, "42"];
   const schema = t.tuple(t.number(), t.string(), t.boolean(), t.string());

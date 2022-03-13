@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("unsignedInteger() infer", () => {
+  const type = t.unsignedInteger();
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, number> = true;
+  assertType;
+
+  const value = type.parse(42);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("unsignedInteger()", () => {
   expect(t.unsignedInteger().parse(0)).toBe(0);
   expect(t.unsignedInteger().parse(42)).toBe(42);

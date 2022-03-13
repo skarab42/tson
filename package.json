@@ -41,7 +41,7 @@
     "write-esm-pkg": "echo {\"type\":\"module\",\"publishConfig\":{\"access\":\"public\"}} > ./build/esm/package.json",
     "write-cjs-pkg": "echo {\"type\":\"commonjs\",\"publishConfig\":{\"access\":\"public\"}} > ./build/cjs/package.json",
     "build": "pnpm build-esm && pnpm build-cjs && pnpm build-types && pnpm write-esm-pkg && pnpm write-cjs-pkg",
-    "test": "vitest run",
+    "test": "tsc --noEmit && vitest run",
     "test-watch": "vitest watch",
     "test-coverage": "vitest run --coverage",
     "format": "prettier --write ./**/*{.js,.ts,.json,.md} --ignore-path .gitignore",

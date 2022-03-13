@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("preprocess() infer", () => {
+  const type = t.preprocess((input) => String(input), t.string());
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, string> = true;
+  assertType;
+
+  const value = type.parse("nyan");
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("preprocess() string", () => {
   const preprocess = t.preprocess((input) => String(input), t.string());
   expect(preprocess.parse("42")).toBe("42");

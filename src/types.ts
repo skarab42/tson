@@ -134,3 +134,9 @@ export type MapErrorLocation = "key" | "value";
 export type MapParser = (map: Map<unknown, unknown>) => void;
 
 export type AnyFunction = (...args: unknown[]) => void;
+
+export type AssertEqual<TType, TExpected> = [TType] extends [TExpected]
+  ? [TExpected] extends [TType]
+    ? true
+    : false
+  : false;

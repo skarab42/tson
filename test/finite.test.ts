@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("finite() infer", () => {
+  const type = t.finite();
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, number> = true;
+  assertType;
+
+  const value = type.parse(42);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("finite()", () => {
   expect(t.finite().parse(0)).toBe(0);
   expect(t.finite().parse(42)).toBe(42);

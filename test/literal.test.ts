@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("literal() infer", () => {
+  const type = t.literal(42);
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, 42> = true;
+  assertType;
+
+  const value = type.parse(42);
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("literal(boolean)", () => {
   const literal = t.literal(true);
   expect(literal.parse(true)).toBe(true);

@@ -1,6 +1,36 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+test("enum() infer", () => {
+  const type = t.enum("UP", "DOWN", "LEFT", "RIGHT");
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, "UP" | "DOWN" | "LEFT" | "RIGHT"> =
+    true;
+  assertType;
+
+  const value = type.parse("UP");
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
+test("enum(native) infer", () => {
+  enum MyStrEnum {
+    UP = "UP",
+    DOWN = "DOWN",
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+  }
+
+  const type = t.enum(MyStrEnum);
+  type Type = t.infer<typeof type>;
+  const assertType: t.AssertEqual<Type, MyStrEnum> = true;
+  assertType;
+
+  const value = type.parse("UP");
+  const assertValue: t.AssertEqual<typeof value, Type> = true;
+  assertValue;
+});
+
 test("enum(...string[])", () => {
   const myEnum = t.enum("UP", "DOWN", "LEFT", "RIGHT");
   expect(myEnum.parse("UP")).toBe("UP");
