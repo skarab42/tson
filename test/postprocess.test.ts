@@ -48,6 +48,24 @@ test("postprocess() number -> number", () => {
   );
 });
 
+test("type.postprocess() number -> number", () => {
+  const postprocess = t.number().postprocess((input) => input + 2);
+
+  expect(postprocess.parse(40)).toBe(42);
+
+  expect(() => postprocess.parse("42")).toThrow(
+    "expected 'number' got 'string'",
+  );
+});
+
+test("type.transform() number -> number", () => {
+  const transform = t.number().transform((input) => input + 2);
+
+  expect(transform.parse(40)).toBe(42);
+
+  expect(() => transform.parse("42")).toThrow("expected 'number' got 'string'");
+});
+
 test("postprocess() number -> number fail", () => {
   // @ts-expect-error string is not assignable to number
   const postprocess = t.postprocess((input) => `${input}`, t.number());

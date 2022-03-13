@@ -27,3 +27,13 @@ test("preprocess() number", () => {
     "expected 'number' got 'NaN'",
   );
 });
+
+test("type.preprocess() number", () => {
+  const preprocess = t.number().preprocess((input) => Number(input));
+  expect(preprocess.parse("42")).toBe(42);
+  expect(preprocess.parse(42)).toBe(42);
+
+  expect(() => preprocess.parse(undefined)).toThrow(
+    "expected 'number' got 'NaN'",
+  );
+});
