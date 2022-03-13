@@ -30,9 +30,14 @@ export type SafeParseReturns<TReturn> =
   | SafeParseSuccess<TReturn>
   | SafeParseError;
 
+export type ProcessFilter<TType = unknown> = (input: TType) => TType;
+
 export type TypeHelpers<TReturn> = {
   safeParse(input: unknown): SafeParseReturns<TReturn>;
   optional(): Type<TReturn | undefined>;
+  preprocess(filter: ProcessFilter): Type<TReturn>;
+  postprocess(filter: ProcessFilter<TReturn>): Type<TReturn>;
+  transform(filter: ProcessFilter<TReturn>): Type<TReturn>;
 };
 
 export type TypeBase<TReturn> = {

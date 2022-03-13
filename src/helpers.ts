@@ -1,6 +1,12 @@
 import { TypeParseError } from "./errors";
-import { Type, TypeHelpers } from "./types";
 import { optionalType } from "./type/optional";
+import { preprocessType } from "./type/preprocess";
+import { postprocessType } from "./type/postprocess";
+import { ProcessFilter, Type, TypeHelpers } from "./types";
+
+function postprocess<TType>(this: Type<TType>, filter: ProcessFilter<TType>) {
+  return postprocessType(filter, this);
+}
 
 export function helpers<TType>(): TypeHelpers<TType> {
   return {
@@ -18,5 +24,10 @@ export function helpers<TType>(): TypeHelpers<TType> {
     optional(this: Type<TType>) {
       return optionalType(this);
     },
+    preprocess(this: Type<TType>, filter: ProcessFilter) {
+      return preprocessType(filter, this);
+    },
+    postprocess,
+    transform: postprocess,
   };
 }
