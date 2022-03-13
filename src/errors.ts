@@ -2,7 +2,7 @@ import { MapErrorLocation } from "./types";
 import { typeOf } from "./util";
 
 export class LengthMismatchError extends TypeError {
-  override name = "LengthMismatchError ";
+  override name = "LengthMismatchError";
   readonly expected: number;
   readonly input: number;
 
