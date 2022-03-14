@@ -2,7 +2,7 @@
 
 **Type Safe Object Notation & Validation**
 
-[![Test and Lint](https://github.com/skarab42/tson/actions/workflows/CI.yaml/badge.svg)](https://github.com/skarab42/tson/actions/workflows/CI.yaml) [![codecov](https://codecov.io/gh/skarab42/tson/branch/main/graph/badge.svg?token=4PSFJBVAFB)](https://codecov.io/gh/skarab42/tson) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/skarab42/tson?color=success&style=flat) ![GitHub](https://img.shields.io/github/license/skarab42/tson?color=success) ![GitHub Sponsors](https://img.shields.io/github/sponsors/skarab42?color=ff69b4&label=%E2%9D%A4%20sponsors%20) ![Twitch Status](https://img.shields.io/twitch/status/skarab42?style=social)
+[![Test and Lint](https://github.com/skarab42/tson/actions/workflows/CI.yaml/badge.svg)](https://github.com/skarab42/tson/actions/workflows/CI.yaml) [![codecov](https://codecov.io/gh/skarab42/tson/branch/main/graph/badge.svg?token=4PSFJBVAFB)](https://codecov.io/gh/skarab42/tson) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/skarab42/tson?color=success&style=flat) ![GitHub](https://img.shields.io/github/license/skarab42/tson?color=success) [![GitHub Sponsors](https://img.shields.io/github/sponsors/skarab42?color=ff69b4&label=%E2%9D%A4%20sponsors%20)](https://github.com/sponsors/skarab42) [![Twitch Status](https://img.shields.io/twitch/status/skarab42?style=social)](https://www.twitch.tv/skarab42)
 
 📌 Work in Progress, not ready for production...
 
