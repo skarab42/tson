@@ -81,11 +81,11 @@ test("union(): with optional in object", () => {
     desc: t.optional(t.union([str, num, boo])),
   });
   let input: object = { name: "nyan", desc: 42 };
-  expect(obj.parse(input)).toBe(input);
+  expect(obj.parse(input)).toEqual(input);
   input = { name: "nyan", desc: "42" };
-  expect(obj.parse(input)).toBe(input);
+  expect(obj.parse(input)).toEqual(input);
   input = { name: "nyan", desc: false };
-  expect(obj.parse(input)).toBe(input);
+  expect(obj.parse(input)).toEqual(input);
   input = { name: "nyan", desc: Symbol(42) };
   expect(() => obj.parse(input)).toThrow(
     "expected 'string|number|boolean|undefined' got 'symbol'",
