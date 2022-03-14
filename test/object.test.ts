@@ -76,7 +76,7 @@ test("object() STRICT", () => {
   const schema = { life: t.number(), name: t.string() };
   const input = { life: 42, name: "prout", plop: true };
   expect(() => t.object(schema, mod).parse(input)).toThrow(
-    "unexpected keys 'plop'",
+    "too many keys, expected [life,name] got [life,name,plop]",
   );
 });
 
@@ -84,7 +84,7 @@ test("object().strict()", () => {
   const schema = { life: t.number(), name: t.string() };
   const input = { life: 42, name: "prout", plop: true };
   expect(() => t.object(schema).strict().parse(input)).toThrow(
-    "unexpected keys 'plop'",
+    "too many keys, expected [life,name] got [life,name,plop]",
   );
 });
 
@@ -102,7 +102,7 @@ test("object() STRICT deep", () => {
     data: { item1: 1, item2: { end: true, nyan: "miaou" } },
   };
   expect(() => t.object(schema, mod).parse(input)).toThrow(
-    "unexpected keys 'nyan' after 'data.item2.end'",
+    "too many keys, expected [end] got [end,nyan]",
   );
 });
 
