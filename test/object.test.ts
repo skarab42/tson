@@ -23,7 +23,7 @@ test("object() infer", () => {
 test("object()", () => {
   const input = { life: 42, name: "prout" };
   const schema = { life: t.number(), name: t.string() };
-  expect(t.object(schema).parse(input)).toBe(input);
+  expect(t.object(schema).parse(input)).toEqual(input);
   expect(() => t.object(schema).parse(Error)).toThrow(
     "expected 'object' got 'function'",
   );
@@ -44,7 +44,7 @@ test("object(): with two levels", () => {
     name: t.string(),
     data: t.object({ size: t.number(), verbose: t.boolean() }),
   });
-  expect(schema.parse(input)).toBe(input);
+  expect(schema.parse(input)).toEqual(input);
 });
 
 test("object(): with error on second level", () => {
@@ -143,5 +143,29 @@ test("object().passthrough()", () => {
     life: 42,
     name: "prout",
     plop: true,
+  });
+});
+
+test("nested object().strip()", () => {
+  const weaponSchema = t
+    .object({ damage: t.number(), weapon: t.string() })
+    .strip();
+
+  const charSchema = t.object({
+    life: t.number(),
+    name: t.string(),
+    mainWeapon: weaponSchema,
+  });
+
+  const input = {
+    life: 42,
+    name: "prout",
+    mainWeapon: { damage: 42, weapon: "sword", weight: "heavy" },
+  };
+
+  expect(charSchema.parse(input)).toEqual({
+    life: 42,
+    name: "prout",
+    mainWeapon: { damage: 42, weapon: "sword" },
   });
 });
