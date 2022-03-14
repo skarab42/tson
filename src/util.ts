@@ -1,5 +1,5 @@
 import { TypeParseError } from "./errors";
-import { ClassLike, ParseType } from "./types";
+import { ClassLike, ObjectTypeMode, ParseType } from "./types";
 
 export function typeOf(input: unknown): string {
   if (typeof input === "undefined") {
@@ -45,3 +45,7 @@ export function instanceOf<TType extends ClassLike>(
 
   throw new TypeParseError(type.name, input);
 }
+
+export const defaultSettings = {
+  objectTypeMode: ObjectTypeMode.STRICT,
+};

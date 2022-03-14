@@ -60,6 +60,16 @@ type User = t.infer<typeof user>;
 // { name: string, age: number, admin: boolean }
 ```
 
+# Strict mode
+
+## TypeScript
+
+It is strongly recommended to activate the [strict](https://www.typescriptlang.org/tsconfig#strict) mode of TypeScript which will activate all checking behaviours that results in stronger guarantees of the program's correctness.
+
+## tson
+
+By default `tson` parse objects in `STRICT` mode, this means that all undefined values in a scheme will be considered as an error. You can change this behaviour globally or locally, the procedure is documented [here](#objectschema-mode).
+
 # Table of contents
 
 - [tson](#tson)
@@ -68,6 +78,9 @@ type User = t.infer<typeof user>;
 - [Install](#install)
   - [ES and CommonJS module](#es-and-commonjs-module)
 - [Examples](#examples)
+- [Strict mode](#strict-mode)
+  - [TypeScript](#typescript)
+  - [tson](#tson-1)
 - [Table of contents](#table-of-contents)
 - [API](#api)
   - [First level types](#first-level-types)
@@ -82,6 +95,11 @@ type User = t.infer<typeof user>;
   - [tuple(type[])](#tupletype-1)
   - [tuple(type[] as const)](#tupletype-as-const)
   - [object(schema)](#objectschema)
+  - [object(schema, mode)](#objectschema-mode)
+  - [object helpers](#object-helpers)
+    - [.strict()](#strict)
+    - [.strip()](#strip)
+    - [.passthrough()](#passthrough)
   - [union(...type)](#uniontype)
   - [union(type[])](#uniontype-1)
   - [union(type[] as const)](#uniontype-as-const)
@@ -115,9 +133,9 @@ type User = t.infer<typeof user>;
   - [postprocess(filter, inputType, outputType)](#postprocessfilter-inputtype-outputtype)
 - [Type helpers](#type-helpers)
   - [safeParse(input)](#safeparseinput)
-  - [optional](#optional)
-  - [preprocess](#preprocess)
-  - [postprocess](#postprocess)
+  - [optional()](#optional)
+  - [preprocess()](#preprocess)
+  - [postprocess()](#postprocess)
 - [Contributing 💜](#contributing-)
 
 # API
@@ -221,6 +239,64 @@ const user = t.object({
 
 type User = t.infer<typeof user>;
 // { name: string, age: number, admin: boolean }
+```
+
+## object(schema, mode)
+
+By default `tson` parse objects in `STRICT` mode, but you can change the mode globally or locally.
+
+There are three modes:
+
+- `STRICT`: Will raise an error if a key is not defined in the schema.
+- `STRIP`: Strips undefined keys from the result and does not raise an error.
+- `PASSTHROUGH`: Keeps undefined keys and does not raise an error.
+
+Change the default mode globally.
+
+```ts
+t.defaultSettings.objectTypeMode = t.ObjectTypeMode.STRIP;
+```
+
+Change the mode locally.
+
+```ts
+const schema = { a: t.string(), b: t.string() };
+const input = { a: "a", b: "b", c: "c" };
+
+const user = t.object(schema, t.ObjectTypeMode.STRICT);
+user.parse(input); // throws an TypeParseError
+
+const user = t.object(schema, t.ObjectTypeMode.STRIP);
+user.parse(input); // { a: string, b: string }
+
+const user = t.object(schema, t.ObjectTypeMode.PASSTHROUGH);
+user.parse(input); // { a: string, b: string, c: string }
+```
+
+## object helpers
+
+### .strict()
+
+```ts
+t.object(schema).strict();
+// same as
+t.object(schema, t.ObjectTypeMode.STRICT);
+```
+
+### .strip()
+
+```ts
+t.object(schema).strip();
+// same as
+t.object(schema, t.ObjectTypeMode.STRIP);
+```
+
+### .passthrough()
+
+```ts
+t.object(schema).passthrough();
+// same as
+t.object(schema, t.ObjectTypeMode.PASSTHROUGH);
 ```
 
 ## union(...type)
@@ -556,7 +632,7 @@ t.bigint().safeParse(42);
 // }
 ```
 
-## optional
+## optional()
 
 ```ts
 t.bigint().optional(); // => bigint | undefined
@@ -565,7 +641,7 @@ t.bigint().optional(); // => bigint | undefined
 t.optional(t.bigint());
 ```
 
-## preprocess
+## preprocess()
 
 ```ts
 t.string().preprocess((input) => String(input));
@@ -574,7 +650,7 @@ t.string().preprocess((input) => String(input));
 t.preprocess((input) => String(input), t.string());
 ```
 
-## postprocess
+## postprocess()
 
 Alias: `.transform()`
 

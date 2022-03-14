@@ -1,6 +1,8 @@
 import { expect, test } from "vitest";
 import { t } from "../src";
 
+// t.defaultSettings.objectTypeMode = 1;
+
 test("object() infer", () => {
   const input = { life: 42, name: "prout", data: { size: 24, verbose: true } };
   const type = t.object({
@@ -67,4 +69,79 @@ test("object(): with invalid input", () => {
   expect(() => t.object(input).parse(input)).toThrow(
     "val.parse is not a function",
   );
+});
+
+test("object() STRICT", () => {
+  const mod = t.ObjectTypeMode.STRICT;
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(() => t.object(schema, mod).parse(input)).toThrow(
+    "unexpected keys 'plop'",
+  );
+});
+
+test("object().strict()", () => {
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(() => t.object(schema).strict().parse(input)).toThrow(
+    "unexpected keys 'plop'",
+  );
+});
+
+test("object() STRICT deep", () => {
+  const mod = t.ObjectTypeMode.STRICT;
+  const schema = {
+    life: t.number(),
+    data: t.object({
+      item1: t.number(),
+      item2: t.object({ end: t.boolean() }),
+    }),
+  };
+  const input = {
+    life: 42,
+    data: { item1: 1, item2: { end: true, nyan: "miaou" } },
+  };
+  expect(() => t.object(schema, mod).parse(input)).toThrow(
+    "unexpected keys 'nyan' after 'data.item2.end'",
+  );
+});
+
+test("object() STRIP", () => {
+  const mod = t.ObjectTypeMode.STRIP;
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(t.object(schema, mod).parse(input)).toEqual({
+    life: 42,
+    name: "prout",
+  });
+});
+
+test("object().strip()", () => {
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(t.object(schema).strip().parse(input)).toEqual({
+    life: 42,
+    name: "prout",
+  });
+});
+
+test("object() PASSTHROUGH", () => {
+  const mod = t.ObjectTypeMode.PASSTHROUGH;
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(t.object(schema, mod).parse(input)).toEqual({
+    life: 42,
+    name: "prout",
+    plop: true,
+  });
+});
+
+test("object().passthrough()", () => {
+  const schema = { life: t.number(), name: t.string() };
+  const input = { life: 42, name: "prout", plop: true };
+  expect(t.object(schema).passthrough().parse(input)).toEqual({
+    life: 42,
+    name: "prout",
+    plop: true,
+  });
 });

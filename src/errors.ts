@@ -62,3 +62,20 @@ export class MapTypeParseError extends TypeParseError {
     this.message = `expected ${keyOrValue} to be '${expected}' got '${type}' from '${location}'`;
   }
 }
+
+export class UnexpectedKeysError extends TypeParseError {
+  override name = "UnexpectedKeysError";
+  readonly keys: string[];
+
+  constructor(
+    keys: string[],
+    expected: string,
+    input: unknown,
+    path: string[],
+  ) {
+    super(expected, input, path);
+    this.keys = keys;
+    const location = path.join(".");
+    this.message = `unexpected keys '${keys.join(",")}' after '${location}'`;
+  }
+}

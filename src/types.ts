@@ -49,6 +49,9 @@ export type Type<TReturn> = TypeBase<TReturn> & TypeHelpers<TReturn>;
 export type Schema = Record<string, Type<unknown>>;
 export type ObjectType<TReturn> = Type<TReturn> & {
   schema: Schema;
+  strict(): ObjectType<TReturn>;
+  strip(): ObjectType<TReturn>;
+  passthrough(): ObjectType<TReturn>;
 };
 
 export type Unwrap<TInput> = TInput extends Record<string, unknown>
@@ -173,3 +176,9 @@ export type AssertEqual<TType, TExpected> = [TType] extends [TExpected]
     ? true
     : false
   : false;
+
+export enum ObjectTypeMode {
+  "STRICT",
+  "STRIP",
+  "PASSTHROUGH",
+}
