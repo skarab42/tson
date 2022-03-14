@@ -1,6 +1,8 @@
 # tson
 
-**Type Safe Object Notation & Validation** [![Test and Lint](https://github.com/skarab42/tson/actions/workflows/CI.yaml/badge.svg)](https://github.com/skarab42/tson/actions/workflows/CI.yaml)
+[![Test and Lint](https://github.com/skarab42/tson/actions/workflows/CI.yaml/badge.svg)](https://github.com/skarab42/tson/actions/workflows/CI.yaml) [![codecov](https://codecov.io/gh/skarab42/tson/branch/main/graph/badge.svg?token=4PSFJBVAFB)](https://codecov.io/gh/skarab42/tson)
+
+**Type Safe Object Notation & Validation**
 
 📌 Work in Progress, not ready for production...
 
