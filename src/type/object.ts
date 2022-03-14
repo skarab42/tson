@@ -44,18 +44,20 @@ export function objectType<TInputSchema extends Schema>(
       }
 
       try {
+        const output = { ...(input as Record<string, unknown>) };
+
         Object.entries(schema).forEach(([key, val]) => {
           lastParsedKey = key;
-          val.parse((input as TInputSchema)[key]);
+          output[key] = val.parse(output[key]);
         });
 
         if (mode === ObjectTypeMode.STRIP) {
-          const output = { ...(input as Record<string, unknown>) };
           inputPropertyNames
             .filter((x) => !schemaPropertyNames.includes(x))
             .forEach((key) => delete output[key]);
-          return output as UnwrapSchema<TInputSchema>;
         }
+
+        return output as UnwrapSchema<TInputSchema>;
       } catch (error) {
         if (error instanceof UnexpectedKeysError) {
           const path = [lastParsedKey, ...error.path];
@@ -74,8 +76,6 @@ export function objectType<TInputSchema extends Schema>(
 
         throw error;
       }
-
-      return input as UnwrapSchema<TInputSchema>;
     },
   };
 }
