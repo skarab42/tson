@@ -26,7 +26,13 @@ jobs:
           version: 6.32.1
       - run: pnpm install
       - run: pnpm add typescript@${{ matrix.typescript }}
-      - run: pnpm test
+      - run: pnpm test-coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
   lint:
     runs-on: ubuntu-latest
