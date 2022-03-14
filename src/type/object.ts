@@ -1,7 +1,7 @@
 import {
   ObjectTypeParseError,
-  TypeParseError,
   UnexpectedKeysError,
+  TypeParseError,
 } from "../errors";
 import { ObjectType, ObjectTypeMode, Schema, UnwrapSchema } from "../types";
 import { helpers } from "../helpers";
@@ -11,6 +11,9 @@ export function objectType<TInputSchema extends Schema>(
   schema: TInputSchema,
   mode: ObjectTypeMode = defaultSettings.objectTypeMode,
 ): ObjectType<UnwrapSchema<TInputSchema>> {
+  const schemaPropertyNames = Object.getOwnPropertyNames(schema);
+  let lastParsedKey = "?";
+
   return {
     schema,
     ...helpers(),
@@ -24,37 +27,41 @@ export function objectType<TInputSchema extends Schema>(
       return objectType(schema, ObjectTypeMode.PASSTHROUGH);
     },
     parse(input: unknown): UnwrapSchema<TInputSchema> {
-      let lastParsedKey = "?";
+      parse<UnwrapSchema<TInputSchema>>("object", input);
+
+      const inputPropertyNames = Object.getOwnPropertyNames(input);
+
+      if (
+        mode === ObjectTypeMode.STRICT &&
+        schemaPropertyNames.length !== inputPropertyNames.length
+      ) {
+        throw new UnexpectedKeysError(
+          schemaPropertyNames,
+          inputPropertyNames,
+          input,
+          [],
+        );
+      }
 
       try {
-        const output = parse<UnwrapSchema<TInputSchema>>("object", input);
-        const reducedOutput = { ...(output as Record<string, unknown>) };
-        const stripedOutput: Record<string, unknown> = {};
-
         Object.entries(schema).forEach(([key, val]) => {
           lastParsedKey = key;
           val.parse((input as TInputSchema)[key]);
-          stripedOutput[key] = (input as TInputSchema)[key];
-          delete reducedOutput[key];
         });
 
-        if (mode === ObjectTypeMode.STRICT) {
-          const unknownKeys = Object.keys(reducedOutput);
-
-          if (unknownKeys.length > 0) {
-            throw new UnexpectedKeysError(unknownKeys, "", input, []);
-          }
-        } else if (mode === ObjectTypeMode.STRIP) {
-          return stripedOutput as UnwrapSchema<TInputSchema>;
+        if (mode === ObjectTypeMode.STRIP) {
+          const output = { ...(input as Record<string, unknown>) };
+          inputPropertyNames
+            .filter((x) => !schemaPropertyNames.includes(x))
+            .forEach((key) => delete output[key]);
+          return output as UnwrapSchema<TInputSchema>;
         }
-
-        return output;
       } catch (error) {
         if (error instanceof UnexpectedKeysError) {
           const path = [lastParsedKey, ...error.path];
           throw new UnexpectedKeysError(
-            error.keys,
-            error.expected,
+            error.expectedKeys,
+            error.receivedKeys,
             error.input,
             path,
           );
@@ -67,6 +74,8 @@ export function objectType<TInputSchema extends Schema>(
 
         throw error;
       }
+
+      return input as UnwrapSchema<TInputSchema>;
     },
   };
 }

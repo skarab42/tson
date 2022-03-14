@@ -80,9 +80,7 @@ test("union(): with optional in object", () => {
     name: t.string(),
     desc: t.optional(t.union([str, num, boo])),
   });
-  let input: object = { name: "nyan" };
-  expect(obj.parse(input)).toBe(input);
-  input = { name: "nyan", desc: 42 };
+  let input: object = { name: "nyan", desc: 42 };
   expect(obj.parse(input)).toBe(input);
   input = { name: "nyan", desc: "42" };
   expect(obj.parse(input)).toBe(input);
@@ -91,6 +89,9 @@ test("union(): with optional in object", () => {
   input = { name: "nyan", desc: Symbol(42) };
   expect(() => obj.parse(input)).toThrow(
     "expected 'string|number|boolean|undefined' got 'symbol'",
+  );
+  expect(() => obj.parse({ name: "nyan" })).toThrow(
+    "not enough keys, expected [name,desc] got [name]",
   );
 });
 

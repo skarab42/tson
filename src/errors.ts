@@ -65,17 +65,23 @@ export class MapTypeParseError extends TypeParseError {
 
 export class UnexpectedKeysError extends TypeParseError {
   override name = "UnexpectedKeysError";
-  readonly keys: string[];
+  readonly expectedKeys: string[];
+  readonly receivedKeys: string[];
 
   constructor(
-    keys: string[],
-    expected: string,
+    expectedKeys: string[],
+    receivedKeys: string[],
     input: unknown,
     path: string[],
   ) {
-    super(expected, input, path);
-    this.keys = keys;
-    const location = path.join(".");
-    this.message = `unexpected keys '${keys.join(",")}' after '${location}'`;
+    super("undefined", input, path);
+    this.expectedKeys = expectedKeys;
+    this.receivedKeys = receivedKeys;
+    const expected = expectedKeys.join(",");
+    const received = receivedKeys.join(",");
+    const location = path.length ? `from '${path.join(".")}'` : "";
+    const label =
+      expectedKeys.length > receivedKeys.length ? "not enough" : "too many";
+    this.message = `${label} keys, expected [${expected}] got [${received}] ${location}`;
   }
 }
