@@ -17,6 +17,9 @@ specifiers:
   typescript: ^4.6.2
   vitest: ^0.5.5
 
+optionalDependencies:
+  typescript: 4.6.2
+
 devDependencies:
   '@types/node': 17.0.21
   '@typescript-eslint/eslint-plugin': 5.13.0_33fffc354ccfa91fbe7d1677b9395a0a
@@ -31,7 +34,6 @@ devDependencies:
   semantic-release: 19.0.2
   simple-git-hooks: 2.7.0
   ts-unused-exports: 8.0.0_typescript@4.6.2
-  typescript: 4.6.2
   vitest: 0.5.9_c8@7.11.0
 
 packages:
@@ -3257,7 +3259,8 @@ packages:
     resolution: {integrity: sha512-HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
+    dev: false
+    optional: true
 
   /uglify-js/3.15.3:
     resolution: {integrity: sha512-6iCVm2omGJbsu3JWac+p6kUiOpg3wFO2f8lIXjfEb8RrmLjzog1wTPMmwKB7swfzzqxj9YM+sGUM++u1qN4qJg==}
