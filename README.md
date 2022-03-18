@@ -8,7 +8,7 @@
 
 ## Features
 
-- 🧱 Fonctional
+- 🧱 Functional
 - 🔷 Immutable
 - ✅ Well tested
 
