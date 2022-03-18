@@ -8,6 +8,7 @@ export class LengthMismatchError extends TypeError {
 
   constructor(expected: number, input: number) {
     super(`expected length to be '${expected}' got '${input}'`);
+
     this.expected = expected;
     this.input = input;
   }
@@ -21,6 +22,7 @@ export class TypeParseError extends TypeError {
 
   constructor(expected: string, input: unknown, path: string[] = []) {
     super(`expected '${expected}' got '${typeOf(input)}'`);
+
     this.expected = expected;
     this.input = input;
     this.path = path;
@@ -32,6 +34,7 @@ export class ObjectTypeParseError extends TypeParseError {
 
   constructor(expected: string, input: unknown, path: string[]) {
     super(expected, input, path);
+
     this.message += ` from '${path.join(".")}'`;
   }
 }
@@ -41,6 +44,7 @@ export class ArrayTypeParseError extends TypeParseError {
 
   constructor(expected: string, input: unknown, path: string[]) {
     super(expected, input, path);
+
     this.message += ` at index '${path.join(".")}'`;
   }
 }
@@ -56,9 +60,12 @@ export class MapTypeParseError extends TypeParseError {
     path: string[],
   ) {
     super(expected, input, path);
+
     this.location = keyOrValue;
+
     const type = typeOf(input);
     const location = path.join(".");
+
     this.message = `expected ${keyOrValue} to be '${expected}' got '${type}' from '${location}'`;
   }
 }
@@ -75,13 +82,16 @@ export class UnexpectedKeysError extends TypeParseError {
     path: string[],
   ) {
     super("undefined", input, path);
+
     this.expectedKeys = expectedKeys;
     this.receivedKeys = receivedKeys;
+
     const expected = expectedKeys.join(",");
     const received = receivedKeys.join(",");
     const location = path.length ? `from '${path.join(".")}'` : "";
     const label =
       expectedKeys.length > receivedKeys.length ? "not enough" : "too many";
+
     this.message = `${label} keys, expected [${expected}] got [${received}] ${location}`;
   }
 }
