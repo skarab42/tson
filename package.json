@@ -14,7 +14,6 @@
   "bugs": "https://github.com/skarab42/tson/issues",
   "funding": "https://github.com/sponsors/skarab42",
   "license": "MIT",
-  "type": "module",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/types/index.d.ts",
@@ -38,9 +37,7 @@
     "build-esm": "tsc -p tsconfig-esm.json",
     "build-cjs": "tsc -p tsconfig-cjs.json",
     "build-types": "tsc -p tsconfig-types.json",
-    "write-esm-pkg": "echo {\"type\":\"module\",\"publishConfig\":{\"access\":\"public\"}} > ./build/esm/package.json",
-    "write-cjs-pkg": "echo {\"type\":\"commonjs\",\"publishConfig\":{\"access\":\"public\"}} > ./build/cjs/package.json",
-    "build": "pnpm build-esm && pnpm build-cjs && pnpm build-types && pnpm write-esm-pkg && pnpm write-cjs-pkg",
+    "build": "pnpm build-esm && pnpm build-cjs && pnpm build-types",
     "test": "tsc --noEmit && vitest run",
     "test-watch": "vitest watch",
     "test-coverage": "vitest run --coverage",
@@ -64,6 +61,7 @@
     "semantic-release": "^19.0.2",
     "simple-git-hooks": "^2.7.0",
     "ts-unused-exports": "^8.0.0",
+    "typescript": "^4.6.2",
     "vitest": "^0.5.5"
   },
   "optionalDependencies": {
