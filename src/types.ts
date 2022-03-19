@@ -62,8 +62,6 @@ export type InferType<TType> = TType extends TypeBase<infer TReturn>
   ? TReturn
   : TType;
 
-export type infer<TType> = InferType<TType>;
-
 export type InferSchema<TSchema extends Schema> = {
   [Key in keyof TSchema]: TSchema[Key] extends Schema
     ? InferSchema<TSchema[Key]>
@@ -182,3 +180,5 @@ export enum ObjectTypeMode {
   "STRIP",
   "PASSTHROUGH",
 }
+
+export type { InferType as infer };
