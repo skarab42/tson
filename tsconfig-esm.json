@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "include": ["src"],
   "compilerOptions": {
-    "module": "esnext",
+    "target": "ES2015",
+    "module": "ES2015",
     "outDir": "build/esm",
     "rootDir": "src"
   }

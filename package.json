@@ -14,15 +14,14 @@
   "bugs": "https://github.com/skarab42/tson/issues",
   "funding": "https://github.com/sponsors/skarab42",
   "license": "MIT",
-  "type": "module",
-  "main": "./build/cjs/index.js",
-  "module": "./build/esm/index.js",
-  "types": "./build/types/index.d.ts",
+  "main": "./build/index.js",
+  "module": "./build/index.mjs",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/esm/index.js",
-      "require": "./build/cjs/index.js",
-      "types": "./build/types/index.d.ts"
+      "import": "./build/index.mjs",
+      "require": "./build/index.js",
+      "types": "./build/index.d.ts"
     }
   },
   "files": [
@@ -35,19 +34,13 @@
   "scripts": {
     "up-hooks": "npx simple-git-hooks",
     "prepare": "pnpm up-hooks",
-    "build-esm": "tsc -p tsconfig-esm.json",
-    "build-cjs": "tsc -p tsconfig-cjs.json",
-    "build-types": "tsc -p tsconfig-types.json",
-    "write-esm-pkg": "echo {\"type\":\"module\",\"publishConfig\":{\"access\":\"public\"}} > ./build/esm/package.json",
-    "write-cjs-pkg": "echo {\"type\":\"commonjs\",\"publishConfig\":{\"access\":\"public\"}} > ./build/cjs/package.json",
-    "build": "pnpm build-esm && pnpm build-cjs && pnpm build-types && pnpm write-esm-pkg && pnpm write-cjs-pkg",
+    "build": "tsup",
     "test": "tsc --noEmit && vitest run",
     "test-watch": "vitest watch",
     "test-coverage": "vitest run --coverage",
     "format": "prettier --write ./**/*{.js,.ts,.json,.md} --ignore-path .gitignore",
     "lint": "eslint --ext \".js,.ts\" --max-warnings=0 --ignore-path .gitignore .",
     "lint-fix": "pnpm lint --fix",
-    "unused-exports": "pnpm ts-unused-exports tsconfig.json",
     "semantic-release": "semantic-release --branches main"
   },
   "devDependencies": {
@@ -63,7 +56,8 @@
     "prettier": "^2.5.1",
     "semantic-release": "^19.0.2",
     "simple-git-hooks": "^2.7.0",
-    "ts-unused-exports": "^8.0.0",
+    "tsup": "^5.12.1",
+    "typescript": "^4.6.2",
     "vitest": "^0.5.5"
   },
   "optionalDependencies": {
